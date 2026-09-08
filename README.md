@@ -36,6 +36,24 @@ behalf. Three of the bundle's eight sources spell it `mv` and five spell it
 `mV`. None of that is normalised away; the millivolt test is the one that
 ignores case.
 
+## The delivery
+
+One Parquet file per grain, read with DuckDB — the engine lives in the files, so
+there is no server to operate. The join that matters is one hop:
+
+```sql
+SELECT r.record_id, f.relative_path, f.sha256_declared
+FROM record r JOIN source_file f ON f.file_id = r.signal_file_id
+```
+
+Every one of the 222,301 files carries the digest its publisher released, not
+one of ours.
+
+```
+systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
+    uv run python scripts/build_database.py
+```
+
 ## Finding the same tracing twice
 
 Three sieves, cheapest first, each shrinking the work of the next: the
@@ -47,6 +65,15 @@ PhysioNet publishes it and 1000 in the bundle — and the correlation sieve
 exists because a quantum does not save a sample sitting on a rounding
 boundary.
 
+A link carries its scope. Two packagings of one corpus repeating a tracing is
+one finding; a single distribution shipping the same tracing twice under two
+record ids is another, and the second is the one a split has to respect —
+splitting by patient does not separate a recording from its own copy. Six of
+the twelve distributions do it: CPSC-2018 ships 6,877 records holding 6,622
+tracings. Thirty pairs were opened to settle whether these are copies or second
+acquisitions; all thirty were identical sample for sample. The `signal_group`
+column is the key a split is drawn on.
+
 ## Running it
 
 The corpora are not in the repository. Point `ECGCHAIN_DATA_DIR` at wherever
@@ -57,6 +84,10 @@ uv sync --dev
 uv run pytest -q -m "not data"        # everything that does not need corpora
 uv run pytest -q                      # everything, with corpora on disk
 ```
+
+Only one heavy pass runs at a time, enforced by a lock file under
+`results/cache/locks` rather than by searching the process table — a search for
+a script's name matches the shell doing the searching.
 
 Three passes are heavy — verifying the manifests reads every byte of every
 corpus, and the quality sweep reads every sample of every record — so they run

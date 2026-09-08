@@ -9,3 +9,4 @@ results/
 !results/
 !results/*.json
 results/cache/
+results/delivery/

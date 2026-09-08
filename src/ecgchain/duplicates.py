@@ -14,9 +14,13 @@ than the one before it and each one shrinks the work the next has to do.
    so it runs on leftovers only and refuses a comparison it cannot afford
    rather than quietly taking an hour.
 
+A link carries its scope.  Two packagings of one corpus repeating a tracing is
+one finding; a single distribution shipping the same tracing twice under two
+record ids is another, and the second is the one a split has to respect,
+because splitting by patient does not separate a recording from its own copy.
+
 Nothing here decides that two records are the same patient.  That is a
-different question with a different answer, and it is the one the splits
-depend on.
+different question with a different answer.
 """
 
 from __future__ import annotations
@@ -28,7 +32,19 @@ from dataclasses import dataclass
 import numpy as np
 from numpy.typing import NDArray
 
-__all__ = ["DuplicateLink", "by_digest", "correlate", "merge", "unmatched"]
+__all__ = [
+    "ACROSS",
+    "DuplicateLink",
+    "WITHIN",
+    "by_digest",
+    "correlate",
+    "groups",
+    "merge",
+    "unmatched",
+]
+
+WITHIN = "within-distribution"
+ACROSS = "across-distributions"
 
 
 @dataclass(frozen=True)
@@ -39,36 +55,43 @@ class DuplicateLink:
     record_b: str
     sieve: str  # "source-file", "signal" or "correlation"
     score: float  # 1.0 for a digest match, the correlation otherwise
+    scope: str  # WITHIN or ACROSS
 
     @staticmethod
-    def between(first: str, second: str, sieve: str, score: float) -> DuplicateLink:
+    def between(
+        first: str, second: str, sieve: str, score: float, scope: str = ACROSS
+    ) -> DuplicateLink:
         a, b = sorted((first, second))
-        return DuplicateLink(a, b, sieve, score)
+        return DuplicateLink(a, b, sieve, score, scope)
+
+
+def groups(digests: Mapping[str, str | None]) -> dict[str, list[str]]:
+    """Digest -> the records that carry it, in a stable order."""
+    found: dict[str, list[str]] = defaultdict(list)
+    for record_id, digest in digests.items():
+        if digest is not None:
+            found[digest].append(record_id)
+    return {digest: sorted(members) for digest, members in sorted(found.items())}
 
 
 def by_digest(
-    digests: Mapping[str, str | None], sieve: str, within: Mapping[str, str] | None = None
+    digests: Mapping[str, str | None], sieve: str, source_of: Mapping[str, str]
 ) -> list[DuplicateLink]:
-    """Link every pair of records sharing a digest.
+    """Link every pair of records sharing a digest, each with its scope.
 
-    ``within`` maps a record id to its distribution; when given, two records of
-    the same distribution are not linked, because a corpus repeating a tracing
-    inside itself is a different finding from two packagings of one corpus.
+    ``source_of`` maps a record id to the distribution it came from; a pair
+    inside one distribution is labelled WITHIN and a pair across two is
+    labelled ACROSS.  Nothing is dropped: both are findings, and they are not
+    the same finding.
     """
-    groups: dict[str, list[str]] = defaultdict(list)
-    for record_id, digest in digests.items():
-        if digest is not None:
-            groups[digest].append(record_id)
     links: list[DuplicateLink] = []
-    for members in groups.values():
+    for members in groups(digests).values():
         if len(members) < 2:
             continue
-        ordered = sorted(members)
-        for index, first in enumerate(ordered):
-            for second in ordered[index + 1 :]:
-                if within is not None and within.get(first) == within.get(second):
-                    continue
-                links.append(DuplicateLink.between(first, second, sieve, 1.0))
+        for index, first in enumerate(members):
+            for second in members[index + 1 :]:
+                scope = WITHIN if source_of.get(first) == source_of.get(second) else ACROSS
+                links.append(DuplicateLink.between(first, second, sieve, 1.0, scope))
     return links
 
 
@@ -102,6 +125,7 @@ def correlate(
     right: Mapping[str, NDArray[np.float32]],
     threshold: float = 0.99,
     max_pairs: int = 5_000_000,
+    scope: str = ACROSS,
 ) -> list[DuplicateLink]:
     """Best-match links between two sets of single-lead windows.
 
@@ -122,5 +146,5 @@ def correlate(
             if score > best_score:
                 best_id, best_score = right_id, score
         if best_id and best_score >= threshold:
-            links.append(DuplicateLink.between(left_id, best_id, "correlation", best_score))
+            links.append(DuplicateLink.between(left_id, best_id, "correlation", best_score, scope))
     return links

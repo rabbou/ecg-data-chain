@@ -6,9 +6,18 @@ import numpy as np
 import pytest
 from numpy.typing import NDArray
 
-from ecgchain.duplicates import DuplicateLink, by_digest, correlate, merge, unmatched
+from ecgchain.duplicates import (
+    ACROSS,
+    WITHIN,
+    DuplicateLink,
+    by_digest,
+    correlate,
+    groups,
+    merge,
+    unmatched,
+)
 
-WITHIN = {"a:1": "a", "a:2": "a", "b:1": "b", "b:2": "b"}
+SOURCE_OF = {"a:1": "a", "a:2": "a", "b:1": "b", "b:2": "b"}
 
 
 class TestPairForm:
@@ -19,26 +28,46 @@ class TestPairForm:
         assert first.record_a == "a:1"
 
 
+class TestGroups:
+    def test_a_digest_carries_its_records_in_order(self) -> None:
+        assert groups({"b:1": "x", "a:1": "x", "b:2": "y"}) == {
+            "x": ["a:1", "b:1"],
+            "y": ["b:2"],
+        }
+
+    def test_a_record_with_no_digest_is_in_no_group(self) -> None:
+        assert groups({"a:1": None}) == {}
+
+
 class TestByDigest:
     def test_records_sharing_a_digest_are_linked(self) -> None:
-        links = by_digest({"a:1": "x", "b:1": "x", "b:2": "y"}, "signal")
+        links = by_digest({"a:1": "x", "b:1": "x", "b:2": "y"}, "signal", SOURCE_OF)
         assert [(link.record_a, link.record_b) for link in links] == [("a:1", "b:1")]
         assert links[0].sieve == "signal"
         assert links[0].score == 1.0
 
     def test_a_record_with_no_digest_is_not_linked(self) -> None:
-        assert by_digest({"a:1": None, "b:1": None}, "signal") == []
+        assert by_digest({"a:1": None, "b:1": None}, "signal", SOURCE_OF) == []
 
-    def test_within_one_distribution_is_not_a_cross_packaging_link(self) -> None:
-        """A corpus repeating a tracing inside itself is a different finding."""
-        digests = {"a:1": "x", "a:2": "x", "b:1": "x"}
-        links = by_digest(digests, "signal", WITHIN)
-        pairs = {(link.record_a, link.record_b) for link in links}
-        assert pairs == {("a:1", "b:1"), ("a:2", "b:1")}
-
-    def test_without_within_the_same_distribution_is_linked(self) -> None:
-        links = by_digest({"a:1": "x", "a:2": "x"}, "signal")
+    def test_a_pair_inside_one_distribution_is_scoped_within(self) -> None:
+        """One distribution shipping a tracing twice is what a split must respect."""
+        links = by_digest({"a:1": "x", "a:2": "x"}, "signal", SOURCE_OF)
         assert len(links) == 1
+        assert links[0].scope == WITHIN
+
+    def test_a_pair_across_two_distributions_is_scoped_across(self) -> None:
+        links = by_digest({"a:1": "x", "b:1": "x"}, "signal", SOURCE_OF)
+        assert links[0].scope == ACROSS
+
+    def test_both_scopes_come_out_of_one_group(self) -> None:
+        """Nothing is dropped: three records sharing a tracing make three pairs."""
+        links = by_digest({"a:1": "x", "a:2": "x", "b:1": "x"}, "signal", SOURCE_OF)
+        by_scope = {(link.record_a, link.record_b): link.scope for link in links}
+        assert by_scope == {
+            ("a:1", "a:2"): WITHIN,
+            ("a:1", "b:1"): ACROSS,
+            ("a:2", "b:1"): ACROSS,
+        }
 
 
 class TestMerge:
@@ -91,11 +120,11 @@ class TestMerge:
 
 class TestUnmatched:
     def test_what_no_link_mentions(self) -> None:
-        links = by_digest({"a:1": "x", "b:1": "x"}, "signal")
+        links = by_digest({"a:1": "x", "b:1": "x"}, "signal", SOURCE_OF)
         assert unmatched(["a:1", "a:2", "a:3"], links) == ["a:2", "a:3"]
 
     def test_nothing_left_when_everything_is_linked(self) -> None:
-        links = by_digest({"a:1": "x", "b:1": "x"}, "signal")
+        links = by_digest({"a:1": "x", "b:1": "x"}, "signal", SOURCE_OF)
         assert unmatched(["a:1"], links) == []
 
 
@@ -112,6 +141,12 @@ class TestCorrelate:
         assert len(links) == 1
         assert links[0].sieve == "correlation"
         assert links[0].score == pytest.approx(1.0)
+        assert links[0].scope == ACROSS
+
+    def test_the_scope_is_carried_through(self) -> None:
+        wave = self._wave(0)
+        links = correlate({"a:1": wave}, {"a:2": wave}, scope=WITHIN)
+        assert links[0].scope == WITHIN
 
     def test_an_unrelated_wave_is_not_linked(self) -> None:
         assert correlate({"a:1": self._wave(0)}, {"b:1": self._wave(1)}) == []

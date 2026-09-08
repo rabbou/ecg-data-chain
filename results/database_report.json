@@ -1,0 +1,27 @@
+{
+  "tables": {
+    "source": 12,
+    "source_file": 222301,
+    "record": 110876,
+    "lead": 1332159,
+    "label": 181817,
+    "quality": 110876,
+    "signal_group": 110876,
+    "duplicate_link": 22897
+  },
+  "n_records": 110876,
+  "n_distinct_signal_groups": 88196,
+  "n_records_in_a_repeated_group": 45300,
+  "duplicate_links_by_scope": {
+    "within-distribution": 470,
+    "across-distributions": 22427
+  },
+  "n_files_without_a_declared_digest": 0,
+  "traced_example": {
+    "record_id": "challenge-2021/chapman_shaoxing:JS02202",
+    "source_id": "challenge-2021/chapman_shaoxing",
+    "relative_path": "g3/JS02202.mat",
+    "sha256_declared": "cd1e882875df52351103b3e9611133a5efad0fedfd93437b82ca53900a42b580"
+  },
+  "seconds": 2573.2
+}

@@ -16,11 +16,71 @@ RESULTS = Path(__file__).resolve().parents[1] / "results"
 SCREEN = RESULTS / "duplicate_scan.json"
 
 
+# source id -> (pairs, groups, distinct tracings) inside that one distribution
+REPEATS_WITHIN = {
+    "challenge-2021/chapman_shaoxing": (13, 13, 10234),
+    "challenge-2021/cpsc_2018": (261, 250, 6622),
+    "challenge-2021/cpsc_2018_extra": (70, 68, 3384),
+    "challenge-2021/georgia": (96, 92, 10250),
+    "challenge-2021/ningbo": (3, 3, 34902),
+    "challenge-2021/ptb-xl": (38, 34, 21801),
+}
+
+
 @pytest.fixture(scope="module")
-def screen() -> dict[str, dict]:
+def scan() -> dict:
     if not SCREEN.exists():
         pytest.skip(f"{SCREEN} has not been written; run scripts/scan_quality.py")
-    return {entry["corpus"]: entry for entry in json.loads(SCREEN.read_text())}
+    return json.loads(SCREEN.read_text())
+
+
+@pytest.fixture(scope="module")
+def screen(scan: dict) -> dict[str, dict]:
+    return {entry["corpus"]: entry for entry in scan["across"]}
+
+
+@pytest.fixture(scope="module")
+def inside(scan: dict) -> dict[str, dict]:
+    return {entry["source_id"]: entry for entry in scan["within"]}
+
+
+class TestWhatEachDistributionRepeatsInsideItself:
+    """The scope a split has to respect, and the one nobody had counted.
+
+    Splitting by patient does not separate a recording from its own copy under
+    another record id, so these are the pairs that decide whether a fold is
+    honest. Every pair opened in the copy check was identical sample for
+    sample, so they are copies rather than second acquisitions.
+    """
+
+    def test_every_distribution_is_reported(self, inside: dict[str, dict]) -> None:
+        assert len(inside) == 12
+
+    @pytest.mark.parametrize("source_id", sorted(REPEATS_WITHIN))
+    def test_pairs_groups_and_distinct_tracings(
+        self, inside: dict[str, dict], source_id: str
+    ) -> None:
+        entry = inside[source_id]
+        pairs, groups, distinct = REPEATS_WITHIN[source_id]
+        assert entry["n_pairs"] == pairs
+        assert entry["n_groups"] == groups
+        assert entry["n_distinct_tracings"] == distinct
+
+    def test_the_six_others_repeat_nothing(self, inside: dict[str, dict]) -> None:
+        silent = {sid for sid, entry in inside.items() if entry["n_pairs"] == 0}
+        assert silent == set(inside) - set(REPEATS_WITHIN)
+
+    def test_no_physionet_distribution_repeats_anything(self, inside: dict[str, dict]) -> None:
+        """The repackaging introduced every one of them."""
+        originals = {sid: e for sid, e in inside.items() if sid.startswith("physionet/")}
+        assert len(originals) == 4
+        assert all(entry["n_pairs"] == 0 for entry in originals.values())
+
+    def test_a_group_can_hold_more_than_two_records(self, inside: dict[str, dict]) -> None:
+        """250 groups make 261 pairs, so some tracings arrived three times."""
+        entry = inside["challenge-2021/cpsc_2018"]
+        assert entry["n_pairs"] > entry["n_groups"]
+        assert entry["largest_group"] >= 3
 
 
 class TestTheShapeOfTheScreen:

@@ -27,12 +27,16 @@ from numpy.typing import NDArray
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from ecgchain.duplicates import (  # noqa: E402
+    ACROSS,
+    WITHIN,
     DuplicateLink,
     by_digest,
     correlate,
+    groups,
     merge,
     unmatched,
 )
+from ecgchain.heavy import holding  # noqa: E402
 from ecgchain.ingest import headers, read_header  # noqa: E402
 from ecgchain.manifest import parse_manifest  # noqa: E402
 from ecgchain.quality import canonical_window, quality_row  # noqa: E402
@@ -40,6 +44,7 @@ from ecgchain.sources import Source, sources  # noqa: E402
 
 RESULTS = Path(__file__).resolve().parents[1] / "results"
 CACHE = RESULTS / "cache" / "signal_digests.json"  # not committed: 110,876 entries
+LINKS = RESULTS / "cache" / "duplicate_links.json"  # not committed: the pairs themselves
 
 
 def file_digests(entry: Source) -> dict[str, str]:
@@ -102,19 +107,47 @@ def lead_one(entry: Source, record_ids: set[str]) -> dict[str, NDArray[np.float3
     return windows
 
 
-def screen(pair: list[Source], digests: dict[str, dict[str, str | None]]) -> dict[str, object]:
+def within_distribution(entry: Source, digests: dict[str, str | None]) -> dict[str, object]:
+    """What one distribution repeats inside itself.
+
+    Only the fingerprint sieve runs here: correlating 34,905 records against
+    each other is 609 million pairs, and the question a split needs answered --
+    which records are the same tracing under two ids -- is one the fingerprint
+    already answers.
+    """
+    source_of = dict.fromkeys(digests, entry.source_id)
+    links = [link for link in by_digest(digests, "signal", source_of) if link.scope == WITHIN]
+    repeated = {digest: members for digest, members in groups(digests).items() if len(members) > 1}
+    in_a_group = sum(len(members) for members in repeated.values())
+    return {
+        "source_id": entry.source_id,
+        "corpus": entry.corpus,
+        "distribution": entry.distribution,
+        "n_records": len(digests),
+        "n_pairs": len(links),
+        "n_groups": len(repeated),
+        "n_records_in_a_group": in_a_group,
+        "largest_group": max((len(m) for m in repeated.values()), default=0),
+        "n_distinct_tracings": len(digests) - (in_a_group - len(repeated)),
+        "examples": [members for members in list(repeated.values())[:3]],
+    }
+
+
+def screen(
+    pair: list[Source], digests: dict[str, dict[str, str | None]]
+) -> tuple[dict[str, object], list[DuplicateLink]]:
     """The three sieves over two packagings of one corpus."""
     left, right = pair
     started = time.monotonic()
 
-    within = {
+    source_of = {
         record_id: entry.source_id for entry in pair for record_id in digests[entry.source_id]
     }
-    files = {**file_digests(left), **file_digests(right)}
-    by_file = by_digest({k: v for k, v in files.items()}, "source-file", within)
+    files: dict[str, str | None] = {**file_digests(left), **file_digests(right)}
+    by_file = [link for link in by_digest(files, "source-file", source_of) if link.scope == ACROSS]
 
     signals: dict[str, str | None] = {**digests[left.source_id], **digests[right.source_id]}
-    by_signal = by_digest(signals, "signal", within)
+    by_signal = [link for link in by_digest(signals, "signal", source_of) if link.scope == ACROSS]
 
     links = merge(by_file, by_signal)
     left_over = set(unmatched(digests[left.source_id], links))
@@ -139,7 +172,7 @@ def screen(pair: list[Source], digests: dict[str, dict[str, str | None]]) -> dic
         note = str(error)
     links = merge(by_file, by_signal, correlation)
 
-    return {
+    report: dict[str, object] = {
         "corpus": left.corpus,
         "sources": [left.source_id, right.source_id],
         "n_records": {e.source_id: len(digests[e.source_id]) for e in pair},
@@ -158,9 +191,15 @@ def screen(pair: list[Source], digests: dict[str, dict[str, str | None]]) -> dic
         "note": note,
         "seconds": round(time.monotonic() - started, 1),
     }
+    return report, links
 
 
 def main() -> int:
+    with holding("heavy", "scripts/scan_quality.py"):
+        return _run()
+
+
+def _run() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", action="append", help="a source id; repeatable")
     parser.add_argument(
@@ -202,25 +241,76 @@ def main() -> int:
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     CACHE.write_text(json.dumps(digests))
 
+    inside = []
+    for entry in wanted:
+        result = within_distribution(entry, digests[entry.source_id])
+        inside.append(result)
+        if result["n_pairs"]:
+            print(
+                f"{result['source_id']}: {result['n_pairs']} pairs inside itself"
+                f" · {result['n_groups']} groups"
+                f" · {result['n_distinct_tracings']} distinct tracings",
+                flush=True,
+            )
+
     by_corpus: dict[str, list[Source]] = defaultdict(list)
     for entry in wanted:
         by_corpus[entry.corpus].append(entry)
-    screens = []
+    screens: list[dict[str, object]] = []
+    across_links: list[DuplicateLink] = []
     for corpus, entries in sorted(by_corpus.items()):
         if len(entries) != 2:
             continue
-        result = screen(entries, digests)
+        result, links = screen(entries, digests)
         screens.append(result)
+        across_links.extend(links)
         print(
-            f"{corpus}: {result['n_linked_pairs']} linked"
+            f"{corpus}: {result['n_linked_pairs']} linked across"
             f" (file {result['linked_by_source_file']},"
             f" signal {result['linked_by_signal']},"
             f" correlation {result['linked_by_correlation']})"
             f" · {result['seconds']}s",
             flush=True,
         )
-    (RESULTS / "duplicate_scan.json").write_text(json.dumps(screens, indent=2) + "\n")
+    # The pairs themselves are cached rather than committed: the database build
+    # reads them, and 21,837 of them do not belong in a summary a reader opens.
+    LINKS.parent.mkdir(parents=True, exist_ok=True)
+    LINKS.write_text(
+        json.dumps(
+            {
+                "within": [
+                    {
+                        "record_a": a,
+                        "record_b": b,
+                        "sieve": "signal",
+                        "score": 1.0,
+                        "scope": WITHIN,
+                    }
+                    for report in inside
+                    for members in _repeated_members(digests[str(report["source_id"])])
+                    for a, b in zip(members, members[1:], strict=False)
+                ],
+                "across": [
+                    {
+                        "record_a": link.record_a,
+                        "record_b": link.record_b,
+                        "sieve": link.sieve,
+                        "score": link.score,
+                        "scope": link.scope,
+                    }
+                    for link in across_links
+                ],
+            }
+        )
+    )
+    (RESULTS / "duplicate_scan.json").write_text(
+        json.dumps({"within": inside, "across": screens}, indent=2) + "\n"
+    )
     return 0
+
+
+def _repeated_members(digests: dict[str, str | None]) -> list[list[str]]:
+    return [members for members in groups(digests).values() if len(members) > 1]
 
 
 if __name__ == "__main__":

@@ -1,0 +1,791 @@
+{
+  "source_id": "challenge-2021/cpsc_2018",
+  "n_groups": 250,
+  "n_checked": 20,
+  "seed": 0,
+  "n_identical_samples": 20,
+  "n_same_comments": 20,
+  "lowest_correlation": 1.0,
+  "pairs": [
+    {
+      "records": [
+        "A1852",
+        "A2653"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          10000,
+          12
+        ],
+        [
+          10000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 71",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 71",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A1328",
+        "A2078"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          11540,
+          12
+        ],
+        [
+          11540,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 59",
+          "Sex: Male",
+          "Dx: 59118001,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 59",
+          "Sex: Male",
+          "Dx: 59118001,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A1193",
+        "A6592"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          6500,
+          12
+        ],
+        [
+          6500,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 88",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 88",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A2503",
+        "A4339"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 55",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 55",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A1228",
+        "A5874"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 77",
+          "Sex: Female",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 77",
+          "Sex: Female",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A3536",
+        "A5042"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          20627,
+          12
+        ],
+        [
+          20627,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 70",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 70",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A2013",
+        "A6674"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 92",
+          "Sex: Female",
+          "Dx: 164909002,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 92",
+          "Sex: Female",
+          "Dx: 164909002,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A3837",
+        "A4990"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          8500,
+          12
+        ],
+        [
+          8500,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 52",
+          "Sex: Female",
+          "Dx: 164889003,164909002,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 52",
+          "Sex: Female",
+          "Dx: 164889003,164909002,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A0152",
+        "A5597"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5492,
+          12
+        ],
+        [
+          5492,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 63",
+          "Sex: Male",
+          "Dx: 59118001,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 63",
+          "Sex: Male",
+          "Dx: 59118001,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A1774",
+        "A5443"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 42",
+          "Sex: Male",
+          "Dx: 164889003,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 42",
+          "Sex: Male",
+          "Dx: 164889003,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A4536",
+        "A5581"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          16000,
+          12
+        ],
+        [
+          16000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 75",
+          "Sex: Male",
+          "Dx: 59118001,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 75",
+          "Sex: Male",
+          "Dx: 59118001,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A4992",
+        "A6250"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          17500,
+          12
+        ],
+        [
+          17500,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 66",
+          "Sex: Female",
+          "Dx: 164889003,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 66",
+          "Sex: Female",
+          "Dx: 164889003,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A0079",
+        "A2565"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 77",
+          "Sex: Female",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 77",
+          "Sex: Female",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A4181",
+        "A6316"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 69",
+          "Sex: Female",
+          "Dx: 164909002,164931005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 69",
+          "Sex: Female",
+          "Dx: 164909002,164931005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A3391",
+        "A5724"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 76",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 76",
+          "Sex: Male",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A0883",
+        "A1624"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5000,
+          12
+        ],
+        [
+          5000,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 60",
+          "Sex: Female",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 60",
+          "Sex: Female",
+          "Dx: 164889003,59118001",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A0237",
+        "A4271"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          7722,
+          12
+        ],
+        [
+          7722,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 22",
+          "Sex: Female",
+          "Dx: 284470004,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 22",
+          "Sex: Female",
+          "Dx: 284470004,429622005",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A1065",
+        "A2107"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          5500,
+          12
+        ],
+        [
+          5500,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 78",
+          "Sex: Female",
+          "Dx: 270492004,164909002",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 78",
+          "Sex: Female",
+          "Dx: 270492004,164909002",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A4408",
+        "A5392"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          9500,
+          12
+        ],
+        [
+          9500,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 83",
+          "Sex: Male",
+          "Dx: 164909002,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 83",
+          "Sex: Male",
+          "Dx: 164909002,164884008",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    },
+    {
+      "records": [
+        "A3119",
+        "A6067"
+      ],
+      "same_shape": true,
+      "shapes": [
+        [
+          9500,
+          12
+        ],
+        [
+          9500,
+          12
+        ]
+      ],
+      "identical_samples": true,
+      "max_absolute_difference": 0.0,
+      "lead_one_correlation": 1.0,
+      "comments": [
+        [
+          "Age: 77",
+          "Sex: Male",
+          "Dx: 164909002,284470004",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ],
+        [
+          "Age: 77",
+          "Sex: Male",
+          "Dx: 164909002,284470004",
+          "Rx: Unknown",
+          "Hx: Unknown",
+          "Sx: Unknown"
+        ]
+      ],
+      "same_comments": true
+    }
+  ]
+}

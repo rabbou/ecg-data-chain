@@ -1,104 +1,330 @@
-[
-  {
-    "corpus": "incart",
-    "sources": [
-      "challenge-2021/st_petersburg_incart",
-      "physionet/incartdb"
-    ],
-    "n_records": {
-      "challenge-2021/st_petersburg_incart": 74,
-      "physionet/incartdb": 75
-    },
-    "linked_by_source_file": 0,
-    "linked_by_signal": 5,
-    "linked_by_correlation": 69,
-    "n_linked_pairs": 74,
-    "unmatched": {
-      "challenge-2021/st_petersburg_incart": [],
-      "physionet/incartdb": [
-        "physionet/incartdb:I36"
+{
+  "within": [
+    {
+      "source_id": "challenge-2021/chapman_shaoxing",
+      "corpus": "chapman-shaoxing",
+      "distribution": "challenge-2021",
+      "n_records": 10247,
+      "n_pairs": 13,
+      "n_groups": 13,
+      "n_records_in_a_group": 26,
+      "largest_group": 2,
+      "n_distinct_tracings": 10234,
+      "examples": [
+        [
+          "challenge-2021/chapman_shaoxing:JS09908",
+          "challenge-2021/chapman_shaoxing:JS10086"
+        ],
+        [
+          "challenge-2021/chapman_shaoxing:JS02989",
+          "challenge-2021/chapman_shaoxing:JS05900"
+        ],
+        [
+          "challenge-2021/chapman_shaoxing:JS10298",
+          "challenge-2021/chapman_shaoxing:JS10609"
+        ]
       ]
     },
-    "shared_native_ids": [],
-    "note": "",
-    "seconds": 22.6
-  },
-  {
-    "corpus": "ptb",
-    "sources": [
-      "challenge-2021/ptb",
-      "physionet/ptbdb"
-    ],
-    "n_records": {
-      "challenge-2021/ptb": 516,
-      "physionet/ptbdb": 549
-    },
-    "linked_by_source_file": 0,
-    "linked_by_signal": 0,
-    "linked_by_correlation": 516,
-    "n_linked_pairs": 516,
-    "unmatched": {
-      "challenge-2021/ptb": [],
-      "physionet/ptbdb": [
-        "physionet/ptbdb:s0001_re",
-        "physionet/ptbdb:s0002_re",
-        "physionet/ptbdb:s0006_re",
-        "physionet/ptbdb:s0007_re",
-        "physionet/ptbdb:s0011_re",
-        "physionet/ptbdb:s0024are",
-        "physionet/ptbdb:s0024bre",
-        "physionet/ptbdb:s0040_re",
-        "physionet/ptbdb:s0041_re",
-        "physionet/ptbdb:s0048_re",
-        "physionet/ptbdb:s0170_re",
-        "physionet/ptbdb:s0176_re",
-        "physionet/ptbdb:s0188_re",
-        "physionet/ptbdb:s0193_re",
-        "physionet/ptbdb:s0200_re",
-        "physionet/ptbdb:s0204are",
-        "physionet/ptbdb:s0204bre",
-        "physionet/ptbdb:s0205_re",
-        "physionet/ptbdb:s0293lre",
-        "physionet/ptbdb:s0310lre",
-        "physionet/ptbdb:s0333lre",
-        "physionet/ptbdb:s0340lre",
-        "physionet/ptbdb:s0341lre",
-        "physionet/ptbdb:s0405lre",
-        "physionet/ptbdb:s0484_re",
-        "physionet/ptbdb:s0509_re",
-        "physionet/ptbdb:s0510_re",
-        "physionet/ptbdb:s0513_re",
-        "physionet/ptbdb:s0528_re",
-        "physionet/ptbdb:s0529_re",
-        "physionet/ptbdb:s0530_re",
-        "physionet/ptbdb:s0537_re",
-        "physionet/ptbdb:s0544_re"
+    {
+      "source_id": "challenge-2021/cpsc_2018",
+      "corpus": "cpsc-2018",
+      "distribution": "challenge-2021",
+      "n_records": 6877,
+      "n_pairs": 261,
+      "n_groups": 250,
+      "n_records_in_a_group": 505,
+      "largest_group": 4,
+      "n_distinct_tracings": 6622,
+      "examples": [
+        [
+          "challenge-2021/cpsc_2018:A1044",
+          "challenge-2021/cpsc_2018:A2106"
+        ],
+        [
+          "challenge-2021/cpsc_2018:A2158",
+          "challenge-2021/cpsc_2018:A6382"
+        ],
+        [
+          "challenge-2021/cpsc_2018:A2652",
+          "challenge-2021/cpsc_2018:A5074"
+        ]
       ]
     },
-    "shared_native_ids": [],
-    "note": "",
-    "seconds": 115.8
-  },
-  {
-    "corpus": "ptb-xl",
-    "sources": [
-      "challenge-2021/ptb-xl",
-      "physionet/ptb-xl"
-    ],
-    "n_records": {
-      "challenge-2021/ptb-xl": 21837,
-      "physionet/ptb-xl": 21799
+    {
+      "source_id": "challenge-2021/cpsc_2018_extra",
+      "corpus": "cpsc-2018-extra",
+      "distribution": "challenge-2021",
+      "n_records": 3453,
+      "n_pairs": 70,
+      "n_groups": 68,
+      "n_records_in_a_group": 137,
+      "largest_group": 3,
+      "n_distinct_tracings": 3384,
+      "examples": [
+        [
+          "challenge-2021/cpsc_2018_extra:Q2270",
+          "challenge-2021/cpsc_2018_extra:Q2478"
+        ],
+        [
+          "challenge-2021/cpsc_2018_extra:Q2147",
+          "challenge-2021/cpsc_2018_extra:Q3105"
+        ],
+        [
+          "challenge-2021/cpsc_2018_extra:Q0051",
+          "challenge-2021/cpsc_2018_extra:Q0063"
+        ]
+      ]
     },
-    "linked_by_source_file": 0,
-    "linked_by_signal": 21835,
-    "linked_by_correlation": 2,
-    "n_linked_pairs": 21837,
-    "unmatched": {
-      "challenge-2021/ptb-xl": [],
-      "physionet/ptb-xl": []
+    {
+      "source_id": "challenge-2021/georgia",
+      "corpus": "georgia",
+      "distribution": "challenge-2021",
+      "n_records": 10344,
+      "n_pairs": 96,
+      "n_groups": 92,
+      "n_records_in_a_group": 186,
+      "largest_group": 3,
+      "n_distinct_tracings": 10250,
+      "examples": [
+        [
+          "challenge-2021/georgia:E09981",
+          "challenge-2021/georgia:E09993"
+        ],
+        [
+          "challenge-2021/georgia:E08730",
+          "challenge-2021/georgia:E08774"
+        ],
+        [
+          "challenge-2021/georgia:E08722",
+          "challenge-2021/georgia:E08808"
+        ]
+      ]
     },
-    "shared_native_ids": [],
-    "note": "",
-    "seconds": 576.8
-  }
-]
+    {
+      "source_id": "challenge-2021/ningbo",
+      "corpus": "ningbo",
+      "distribution": "challenge-2021",
+      "n_records": 34905,
+      "n_pairs": 3,
+      "n_groups": 3,
+      "n_records_in_a_group": 6,
+      "largest_group": 2,
+      "n_distinct_tracings": 34902,
+      "examples": [
+        [
+          "challenge-2021/ningbo:JS19114",
+          "challenge-2021/ningbo:JS19115"
+        ],
+        [
+          "challenge-2021/ningbo:JS45461",
+          "challenge-2021/ningbo:JS45462"
+        ],
+        [
+          "challenge-2021/ningbo:JS33139",
+          "challenge-2021/ningbo:JS33140"
+        ]
+      ]
+    },
+    {
+      "source_id": "challenge-2021/ptb",
+      "corpus": "ptb",
+      "distribution": "challenge-2021",
+      "n_records": 516,
+      "n_pairs": 0,
+      "n_groups": 0,
+      "n_records_in_a_group": 0,
+      "largest_group": 0,
+      "n_distinct_tracings": 516,
+      "examples": []
+    },
+    {
+      "source_id": "challenge-2021/ptb-xl",
+      "corpus": "ptb-xl",
+      "distribution": "challenge-2021",
+      "n_records": 21837,
+      "n_pairs": 38,
+      "n_groups": 34,
+      "n_records_in_a_group": 70,
+      "largest_group": 3,
+      "n_distinct_tracings": 21801,
+      "examples": [
+        [
+          "challenge-2021/ptb-xl:HR00461",
+          "challenge-2021/ptb-xl:HR09823"
+        ],
+        [
+          "challenge-2021/ptb-xl:HR03798",
+          "challenge-2021/ptb-xl:HR03799"
+        ],
+        [
+          "challenge-2021/ptb-xl:HR00458",
+          "challenge-2021/ptb-xl:HR03797"
+        ]
+      ]
+    },
+    {
+      "source_id": "challenge-2021/st_petersburg_incart",
+      "corpus": "incart",
+      "distribution": "challenge-2021",
+      "n_records": 74,
+      "n_pairs": 0,
+      "n_groups": 0,
+      "n_records_in_a_group": 0,
+      "largest_group": 0,
+      "n_distinct_tracings": 74,
+      "examples": []
+    },
+    {
+      "source_id": "physionet/incartdb",
+      "corpus": "incart",
+      "distribution": "physionet",
+      "n_records": 75,
+      "n_pairs": 0,
+      "n_groups": 0,
+      "n_records_in_a_group": 0,
+      "largest_group": 0,
+      "n_distinct_tracings": 75,
+      "examples": []
+    },
+    {
+      "source_id": "physionet/ptb-xl",
+      "corpus": "ptb-xl",
+      "distribution": "physionet",
+      "n_records": 21799,
+      "n_pairs": 0,
+      "n_groups": 0,
+      "n_records_in_a_group": 0,
+      "largest_group": 0,
+      "n_distinct_tracings": 21799,
+      "examples": []
+    },
+    {
+      "source_id": "physionet/ludb",
+      "corpus": "ludb",
+      "distribution": "physionet",
+      "n_records": 200,
+      "n_pairs": 0,
+      "n_groups": 0,
+      "n_records_in_a_group": 0,
+      "largest_group": 0,
+      "n_distinct_tracings": 200,
+      "examples": []
+    },
+    {
+      "source_id": "physionet/ptbdb",
+      "corpus": "ptb",
+      "distribution": "physionet",
+      "n_records": 549,
+      "n_pairs": 0,
+      "n_groups": 0,
+      "n_records_in_a_group": 0,
+      "largest_group": 0,
+      "n_distinct_tracings": 549,
+      "examples": []
+    }
+  ],
+  "across": [
+    {
+      "corpus": "incart",
+      "sources": [
+        "challenge-2021/st_petersburg_incart",
+        "physionet/incartdb"
+      ],
+      "n_records": {
+        "challenge-2021/st_petersburg_incart": 74,
+        "physionet/incartdb": 75
+      },
+      "linked_by_source_file": 0,
+      "linked_by_signal": 5,
+      "linked_by_correlation": 69,
+      "n_linked_pairs": 74,
+      "unmatched": {
+        "challenge-2021/st_petersburg_incart": [],
+        "physionet/incartdb": [
+          "physionet/incartdb:I36"
+        ]
+      },
+      "shared_native_ids": [],
+      "note": "",
+      "seconds": 24.8
+    },
+    {
+      "corpus": "ptb",
+      "sources": [
+        "challenge-2021/ptb",
+        "physionet/ptbdb"
+      ],
+      "n_records": {
+        "challenge-2021/ptb": 516,
+        "physionet/ptbdb": 549
+      },
+      "linked_by_source_file": 0,
+      "linked_by_signal": 0,
+      "linked_by_correlation": 516,
+      "n_linked_pairs": 516,
+      "unmatched": {
+        "challenge-2021/ptb": [],
+        "physionet/ptbdb": [
+          "physionet/ptbdb:s0001_re",
+          "physionet/ptbdb:s0002_re",
+          "physionet/ptbdb:s0006_re",
+          "physionet/ptbdb:s0007_re",
+          "physionet/ptbdb:s0011_re",
+          "physionet/ptbdb:s0024are",
+          "physionet/ptbdb:s0024bre",
+          "physionet/ptbdb:s0040_re",
+          "physionet/ptbdb:s0041_re",
+          "physionet/ptbdb:s0048_re",
+          "physionet/ptbdb:s0170_re",
+          "physionet/ptbdb:s0176_re",
+          "physionet/ptbdb:s0188_re",
+          "physionet/ptbdb:s0193_re",
+          "physionet/ptbdb:s0200_re",
+          "physionet/ptbdb:s0204are",
+          "physionet/ptbdb:s0204bre",
+          "physionet/ptbdb:s0205_re",
+          "physionet/ptbdb:s0293lre",
+          "physionet/ptbdb:s0310lre",
+          "physionet/ptbdb:s0333lre",
+          "physionet/ptbdb:s0340lre",
+          "physionet/ptbdb:s0341lre",
+          "physionet/ptbdb:s0405lre",
+          "physionet/ptbdb:s0484_re",
+          "physionet/ptbdb:s0509_re",
+          "physionet/ptbdb:s0510_re",
+          "physionet/ptbdb:s0513_re",
+          "physionet/ptbdb:s0528_re",
+          "physionet/ptbdb:s0529_re",
+          "physionet/ptbdb:s0530_re",
+          "physionet/ptbdb:s0537_re",
+          "physionet/ptbdb:s0544_re"
+        ]
+      },
+      "shared_native_ids": [],
+      "note": "",
+      "seconds": 157.7
+    },
+    {
+      "corpus": "ptb-xl",
+      "sources": [
+        "challenge-2021/ptb-xl",
+        "physionet/ptb-xl"
+      ],
+      "n_records": {
+        "challenge-2021/ptb-xl": 21837,
+        "physionet/ptb-xl": 21799
+      },
+      "linked_by_source_file": 0,
+      "linked_by_signal": 21835,
+      "linked_by_correlation": 2,
+      "n_linked_pairs": 21837,
+      "unmatched": {
+        "challenge-2021/ptb-xl": [],
+        "physionet/ptb-xl": []
+      },
+      "shared_native_ids": [],
+      "note": "",
+      "seconds": 820.7
+    }
+  ]
+}
