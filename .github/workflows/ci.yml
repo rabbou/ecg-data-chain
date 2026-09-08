@@ -1,0 +1,40 @@
+name: gates
+
+# Ruff, mypy and pytest on the pushed state, from the first commit.
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # requires-python in pyproject.toml is >=3.12,<3.13.
+      - run: uv python install 3.12
+
+      # --locked so CI fails on a uv.lock that no longer matches pyproject.toml
+      # rather than quietly resolving something else.
+      - run: uv sync --locked --dev
+
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src tests scripts
+
+      # -m "not data" leaves out the tests that need the corpora: 53 GB that
+      # are not in the repository and cannot be downloaded here.
+      - run: uv run pytest -q -m "not data"
