@@ -8,3 +8,4 @@ data/
 results/
 !results/
 !results/*.json
+results/cache/

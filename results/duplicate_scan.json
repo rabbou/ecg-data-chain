@@ -1,0 +1,104 @@
+[
+  {
+    "corpus": "incart",
+    "sources": [
+      "challenge-2021/st_petersburg_incart",
+      "physionet/incartdb"
+    ],
+    "n_records": {
+      "challenge-2021/st_petersburg_incart": 74,
+      "physionet/incartdb": 75
+    },
+    "linked_by_source_file": 0,
+    "linked_by_signal": 5,
+    "linked_by_correlation": 69,
+    "n_linked_pairs": 74,
+    "unmatched": {
+      "challenge-2021/st_petersburg_incart": [],
+      "physionet/incartdb": [
+        "physionet/incartdb:I36"
+      ]
+    },
+    "shared_native_ids": [],
+    "note": "",
+    "seconds": 22.6
+  },
+  {
+    "corpus": "ptb",
+    "sources": [
+      "challenge-2021/ptb",
+      "physionet/ptbdb"
+    ],
+    "n_records": {
+      "challenge-2021/ptb": 516,
+      "physionet/ptbdb": 549
+    },
+    "linked_by_source_file": 0,
+    "linked_by_signal": 0,
+    "linked_by_correlation": 516,
+    "n_linked_pairs": 516,
+    "unmatched": {
+      "challenge-2021/ptb": [],
+      "physionet/ptbdb": [
+        "physionet/ptbdb:s0001_re",
+        "physionet/ptbdb:s0002_re",
+        "physionet/ptbdb:s0006_re",
+        "physionet/ptbdb:s0007_re",
+        "physionet/ptbdb:s0011_re",
+        "physionet/ptbdb:s0024are",
+        "physionet/ptbdb:s0024bre",
+        "physionet/ptbdb:s0040_re",
+        "physionet/ptbdb:s0041_re",
+        "physionet/ptbdb:s0048_re",
+        "physionet/ptbdb:s0170_re",
+        "physionet/ptbdb:s0176_re",
+        "physionet/ptbdb:s0188_re",
+        "physionet/ptbdb:s0193_re",
+        "physionet/ptbdb:s0200_re",
+        "physionet/ptbdb:s0204are",
+        "physionet/ptbdb:s0204bre",
+        "physionet/ptbdb:s0205_re",
+        "physionet/ptbdb:s0293lre",
+        "physionet/ptbdb:s0310lre",
+        "physionet/ptbdb:s0333lre",
+        "physionet/ptbdb:s0340lre",
+        "physionet/ptbdb:s0341lre",
+        "physionet/ptbdb:s0405lre",
+        "physionet/ptbdb:s0484_re",
+        "physionet/ptbdb:s0509_re",
+        "physionet/ptbdb:s0510_re",
+        "physionet/ptbdb:s0513_re",
+        "physionet/ptbdb:s0528_re",
+        "physionet/ptbdb:s0529_re",
+        "physionet/ptbdb:s0530_re",
+        "physionet/ptbdb:s0537_re",
+        "physionet/ptbdb:s0544_re"
+      ]
+    },
+    "shared_native_ids": [],
+    "note": "",
+    "seconds": 115.8
+  },
+  {
+    "corpus": "ptb-xl",
+    "sources": [
+      "challenge-2021/ptb-xl",
+      "physionet/ptb-xl"
+    ],
+    "n_records": {
+      "challenge-2021/ptb-xl": 21837,
+      "physionet/ptb-xl": 21799
+    },
+    "linked_by_source_file": 0,
+    "linked_by_signal": 21835,
+    "linked_by_correlation": 2,
+    "n_linked_pairs": 21837,
+    "unmatched": {
+      "challenge-2021/ptb-xl": [],
+      "physionet/ptb-xl": []
+    },
+    "shared_native_ids": [],
+    "note": "",
+    "seconds": 576.8
+  }
+]

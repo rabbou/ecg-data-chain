@@ -3,8 +3,8 @@
 The distinction is not pedantry.  The same corpus reaches the box in more than
 one packaging, and the packagings do not agree.  INCART is here twice: seventy-
 five records as PhysioNet publishes it, seventy-four inside the Challenge 2021
-bundle, under different record ids.  PTB-XL is here twice as well, and the two
-copies differ by thirty-eight records.  Key anything on the corpus name and
+bundle, under different record ids and at a different ADC gain.  PTB-XL and PTB
+are here twice as well.  Key anything on the corpus name and
 those pairs collapse into one; key on the distribution and the difference is a
 row you can query.
 
@@ -19,11 +19,15 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-__all__ = ["DATA_DIR", "Source", "source", "sources"]
+__all__ = ["DATA_DIR", "PTBXL_DIR", "Source", "source", "sources"]
 
 # The corpora are not in the repository and never will be: 53 GB of them sit on
 # the box.  Override with ECGCHAIN_DATA_DIR when they move.
 DATA_DIR = Path(os.environ.get("ECGCHAIN_DATA_DIR", Path.home() / "data"))
+
+# PTB-XL as PhysioNet publishes it was downloaded for an earlier project and is
+# read where it lies rather than copied.  Override with ECGCHAIN_PTBXL_DIR.
+PTBXL_DIR = Path(os.environ.get("ECGCHAIN_PTBXL_DIR", Path.home() / "Developer/ptbxl5d/data"))
 
 _PHYSIONET = "PhysioNet"
 _CC_BY_4 = "CC BY 4.0"
@@ -107,6 +111,19 @@ def sources() -> tuple[Source, ...]:
             subdir="",
             manifest_name="SHA256SUMS.txt",
             manifest_prefix="",
+        ),
+        Source(
+            source_id="physionet/ptb-xl",
+            corpus="ptb-xl",
+            distribution="physionet",
+            version="1.0.3",
+            publisher=_PHYSIONET,
+            licence=_CC_BY_4,
+            slug="ptb-xl",
+            root=PTBXL_DIR,
+            subdir="records500",
+            manifest_name="SHA256SUMS.txt",
+            manifest_prefix="records500/",
         ),
         Source(
             source_id="physionet/ludb",

@@ -24,8 +24,28 @@ twice as well. So the key is the distribution, not the corpus name, and the
 relation between two packagings of the same tracing is something to establish
 rather than assume.
 
-The first delivery is eleven distributions: the eight sources of the Challenge
-2021 bundle, plus INCART, LUDB and PTB as PhysioNet publishes them.
+The first delivery is twelve distributions: the eight sources of the Challenge
+2021 bundle, plus INCART, LUDB, PTB and PTB-XL as PhysioNet publishes them.
+
+## What the headers are not asked to supply
+
+Units are read from the header text, not from the reader. Two of the twelve
+distributions — INCART and PTB as PhysioNet publishes them — declare no units
+at all: their signal lines stop at the gain, and `wfdb` fills in `mV` on their
+behalf. Three of the bundle's eight sources spell it `mv` and five spell it
+`mV`. None of that is normalised away; the millivolt test is the one that
+ignores case.
+
+## Finding the same tracing twice
+
+Three sieves, cheapest first, each shrinking the work of the next: the
+publisher's digest of the signal file, then a digest of the first ten seconds
+of the twelve standard leads quantised to ten microvolts, then correlation on
+what is left. The quantised digest exists because the same recording reaches
+the box at different ADC gains — INCART is 306 units per millivolt as
+PhysioNet publishes it and 1000 in the bundle — and the correlation sieve
+exists because a quantum does not save a sample sitting on a rounding
+boundary.
 
 ## Running it
 
@@ -38,12 +58,23 @@ uv run pytest -q -m "not data"        # everything that does not need corpora
 uv run pytest -q                      # everything, with corpora on disk
 ```
 
-Verifying the manifests reads every byte of every corpus, so it runs under a
-memory cap:
+Three passes are heavy — verifying the manifests reads every byte of every
+corpus, and the quality sweep reads every sample of every record — so they run
+under a memory cap, one at a time:
 
 ```
 systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
     uv run python scripts/verify_manifests.py
+```
+
+```
+systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
+    uv run python scripts/scan_records.py
+```
+
+```
+systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
+    uv run python scripts/scan_quality.py
 ```
 
 ## Gates

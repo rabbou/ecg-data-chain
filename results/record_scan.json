@@ -18,10 +18,11 @@
     "units_declared": {
       "mV": 10247
     },
+    "n_units_declared": 10247,
     "n_all_millivolts": 10247,
     "n_with_dx": 10247,
     "n_non_canonical_leads": 0,
-    "seconds": 91.9
+    "seconds": 91.2
   },
   {
     "source_id": "challenge-2021/cpsc_2018",
@@ -49,10 +50,11 @@
     "units_declared": {
       "mV": 6877
     },
+    "n_units_declared": 6877,
     "n_all_millivolts": 6877,
     "n_with_dx": 6877,
     "n_non_canonical_leads": 0,
-    "seconds": 57.0
+    "seconds": 54.0
   },
   {
     "source_id": "challenge-2021/cpsc_2018_extra",
@@ -80,10 +82,11 @@
     "units_declared": {
       "mV": 3453
     },
+    "n_units_declared": 3453,
     "n_all_millivolts": 3453,
     "n_with_dx": 3453,
     "n_non_canonical_leads": 0,
-    "seconds": 28.0
+    "seconds": 26.9
   },
   {
     "source_id": "challenge-2021/georgia",
@@ -105,10 +108,11 @@
     "units_declared": {
       "mV": 10344
     },
+    "n_units_declared": 10344,
     "n_all_millivolts": 10344,
     "n_with_dx": 10344,
     "n_non_canonical_leads": 0,
-    "seconds": 104.0
+    "seconds": 79.3
   },
   {
     "source_id": "challenge-2021/ningbo",
@@ -129,10 +133,11 @@
     "units_declared": {
       "mV": 34905
     },
+    "n_units_declared": 34905,
     "n_all_millivolts": 34905,
     "n_with_dx": 34905,
     "n_non_canonical_leads": 0,
-    "seconds": 458.1
+    "seconds": 252.1
   },
   {
     "source_id": "challenge-2021/ptb",
@@ -160,10 +165,11 @@
     "units_declared": {
       "mv": 516
     },
+    "n_units_declared": 516,
     "n_all_millivolts": 516,
     "n_with_dx": 516,
     "n_non_canonical_leads": 0,
-    "seconds": 7.3
+    "seconds": 3.8
   },
   {
     "source_id": "challenge-2021/ptb-xl",
@@ -184,10 +190,11 @@
     "units_declared": {
       "mv": 21837
     },
+    "n_units_declared": 21837,
     "n_all_millivolts": 21837,
     "n_with_dx": 21837,
     "n_non_canonical_leads": 0,
-    "seconds": 251.8
+    "seconds": 166.7
   },
   {
     "source_id": "challenge-2021/st_petersburg_incart",
@@ -208,10 +215,11 @@
     "units_declared": {
       "mv": 74
     },
+    "n_units_declared": 74,
     "n_all_millivolts": 74,
     "n_with_dx": 74,
     "n_non_canonical_leads": 0,
-    "seconds": 0.6
+    "seconds": 0.5
   },
   {
     "source_id": "physionet/incartdb",
@@ -229,13 +237,37 @@
     "sample_lengths": [
       462600
     ],
-    "units_declared": {
-      "mV": 75
-    },
-    "n_all_millivolts": 75,
+    "units_declared": {},
+    "n_units_declared": 0,
+    "n_all_millivolts": 0,
     "n_with_dx": 0,
     "n_non_canonical_leads": 0,
-    "seconds": 0.6
+    "seconds": 0.5
+  },
+  {
+    "source_id": "physionet/ptb-xl",
+    "corpus": "ptb-xl",
+    "distribution": "physionet",
+    "version": "1.0.3",
+    "n_records": 21799,
+    "n_leads_rows": 261588,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      5000
+    ],
+    "units_declared": {
+      "mV": 21799
+    },
+    "n_units_declared": 21799,
+    "n_all_millivolts": 21799,
+    "n_with_dx": 0,
+    "n_non_canonical_leads": 0,
+    "seconds": 177.6
   },
   {
     "source_id": "physionet/ludb",
@@ -256,10 +288,11 @@
     "units_declared": {
       "mV": 200
     },
+    "n_units_declared": 200,
     "n_all_millivolts": 200,
     "n_with_dx": 0,
     "n_non_canonical_leads": 0,
-    "seconds": 1.9
+    "seconds": 1.5
   },
   {
     "source_id": "physionet/ptbdb",
@@ -284,12 +317,11 @@
       97000,
       115174
     ],
-    "units_declared": {
-      "mV": 549
-    },
-    "n_all_millivolts": 549,
+    "units_declared": {},
+    "n_units_declared": 0,
+    "n_all_millivolts": 0,
     "n_with_dx": 0,
     "n_non_canonical_leads": 1647,
-    "seconds": 8.9
+    "seconds": 5.0
   }
 ]

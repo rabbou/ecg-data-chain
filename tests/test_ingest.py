@@ -110,8 +110,9 @@ class TestTheTwoPackagingsOfIncart:
     """The pair that decides whether the catalogue may key on the corpus name.
 
     Same corpus, same 12 channels at 257 Hz, 462,600 samples. The Challenge
-    bundle holds one record fewer, renames every record, and rewrites the unit
-    string. Nothing but the distribution key separates them.
+    bundle holds one record fewer, renames every record, changes the ADC gain
+    from 306 to 1000 units per millivolt, and adds a unit string where the
+    original had none. Nothing but the distribution key separates them.
     """
 
     @staticmethod
@@ -126,12 +127,14 @@ class TestTheTwoPackagingsOfIncart:
         assert len(self._scan("physionet/incartdb")) == 75
         assert len(self._scan("challenge-2021/st_petersburg_incart")) == 74
 
-    def test_the_unit_spelling_differs(self) -> None:
-        physionet = {u for row in self._scan("physionet/incartdb") for u in row.units_declared}
+    def test_one_packaging_names_its_units_and_the_other_does_not(self) -> None:
+        """PhysioNet's headers stop at the gain; the bundle's say mv."""
+        physionet = self._scan("physionet/incartdb")
         bundle = self._scan("challenge-2021/st_petersburg_incart")
-        challenge = {u for row in bundle for u in row.units_declared}
-        assert physionet == {"mV"}
-        assert challenge == {"mv"}
+        assert {u for row in physionet for u in row.units_declared} == set()
+        assert not any(row.units_are_declared for row in physionet)
+        assert {u for row in bundle for u in row.units_declared} == {"mv"}
+        assert all(row.units_are_declared for row in bundle)
 
     def test_no_record_id_is_shared(self) -> None:
         physionet = {row.native_record_id for row in self._scan("physionet/incartdb")}

@@ -7,11 +7,14 @@ transformed copy of anything: a hospital that asks where a number came from has
 to land on the file its own machine wrote, and every intermediate file between
 here and there is one more thing to disbelieve.
 
-What the header declares is kept as the header wrote it.  Three of the eight
-Challenge sources spell their units ``mv`` and five spell them ``mV``; a chain
-that silently normalises the string loses the only evidence that the corpora
-disagree.  So ``units_declared`` is verbatim and the comparison that decides
-whether a record is in millivolts is the one that ignores case.
+What the header declares is kept as the header wrote it, and what it does not
+declare is not invented.  Three of the eight Challenge sources spell their
+units ``mv`` and five spell them ``mV``; a chain that silently normalises the
+string loses the only evidence that the corpora disagree.  Worse, a reader that
+fills in a default hides a stronger fact: INCART as PhysioNet publishes it
+declares no unit at all -- its signal lines end at the gain -- and ``wfdb``
+supplies ``mV`` on its behalf.  So the units here are read from the header text
+and are an empty tuple when the file names none.
 """
 
 from __future__ import annotations
@@ -27,6 +30,7 @@ from .sources import Source
 
 __all__ = [
     "CANONICAL_LEADS",
+    "declared_units",
     "LeadRow",
     "RecordRow",
     "canonical_lead",
@@ -68,7 +72,8 @@ class RecordRow:
     sampling_rate_hz: float
     n_samples: int
     units_declared: tuple[str, ...]  # the distinct spellings, as written
-    all_millivolts: bool
+    units_are_declared: bool  # False when the header names no units at all
+    all_millivolts: bool  # by the header's own words, not by a reader's default
     age: str | None
     sex: str | None
     dx: tuple[str, ...]  # SNOMED CT codes, when the header carries them
@@ -92,6 +97,30 @@ class LeadRow:
     adc_zero: int
 
 
+def declared_units(header: Path, n_signals: int) -> tuple[str, ...]:
+    """The unit strings the header text carries, in signal order, as written.
+
+    A WFDB signal line puts the units after the gain, separated by a slash:
+    ``1000.0(0)/mV``.  The slash and everything after it are optional, and
+    where they are absent this returns an empty string for that signal rather
+    than the ``mV`` a reader would otherwise supply on the file's behalf.
+
+    The header is the record line, then one line per signal, then comments.
+    """
+    lines = [
+        line.strip()
+        for line in header.read_text().splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    ]
+    units: list[str] = []
+    for line in lines[1 : 1 + n_signals]:
+        fields = line.split()
+        gain = fields[2] if len(fields) > 2 else ""
+        _, slash, unit = gain.partition("/")
+        units.append(unit if slash else "")
+    return tuple(units)
+
+
 def _comment_value(comments: list[str], key: str) -> str | None:
     prefix = f"{key}:"
     for comment in comments:
@@ -108,7 +137,7 @@ def read_header(source: Source, header: Path) -> tuple[RecordRow, tuple[LeadRow,
     native = header.stem
     record_id = f"{source.source_id}:{native}"
     comments = list(meta.comments or [])
-    units = [str(unit) for unit in (meta.units or [])]
+    units = list(declared_units(header, int(meta.n_sig)))
     dx = _comment_value(comments, "Dx")
 
     leads = tuple(
@@ -133,7 +162,8 @@ def read_header(source: Source, header: Path) -> tuple[RecordRow, tuple[LeadRow,
         n_leads=int(meta.n_sig),
         sampling_rate_hz=float(meta.fs),
         n_samples=int(meta.sig_len),
-        units_declared=tuple(sorted(set(units))),
+        units_declared=tuple(sorted({unit for unit in units if unit})),
+        units_are_declared=all(bool(unit) for unit in units) and bool(units),
         all_millivolts=bool(units) and all(in_millivolts(unit) for unit in units),
         age=_comment_value(comments, "Age"),
         sex=_comment_value(comments, "Sex"),

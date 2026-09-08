@@ -41,6 +41,7 @@ def summarise(entry: Source) -> dict[str, object]:
         "sampling_rates_hz": sorted({row.sampling_rate_hz for row in records}),
         "sample_lengths": sorted({row.n_samples for row in records})[:8],
         "units_declared": dict(sorted(units.items())),
+        "n_units_declared": sum(1 for row in records if row.units_are_declared),
         "n_all_millivolts": sum(1 for row in records if row.all_millivolts),
         "n_with_dx": sum(1 for row in records if row.dx),
         "n_non_canonical_leads": sum(1 for lead in leads if lead.name_canonical is None),

@@ -8,8 +8,8 @@ from ecgchain.sources import Source, source, sources
 
 
 class TestCatalogue:
-    def test_eleven_distributions(self) -> None:
-        assert len(sources()) == 11
+    def test_twelve_distributions(self) -> None:
+        assert len(sources()) == 12
 
     def test_ids_are_unique(self) -> None:
         ids = [entry.source_id for entry in sources()]
@@ -31,18 +31,19 @@ class TestTheCorporaThatArriveTwice:
     name would silently merge two things that are not the same set of files.
     """
 
-    def test_exactly_two_corpora_appear_twice(self) -> None:
+    def test_exactly_three_corpora_appear_twice(self) -> None:
         seen: dict[str, list[str]] = {}
         for entry in sources():
             seen.setdefault(entry.corpus, []).append(entry.source_id)
         twice = {corpus for corpus, ids in seen.items() if len(ids) > 1}
-        assert twice == {"incart", "ptb"}
+        assert twice == {"incart", "ptb", "ptb-xl"}
 
     @pytest.mark.parametrize(
         ("first", "second"),
         [
             ("challenge-2021/st_petersburg_incart", "physionet/incartdb"),
             ("challenge-2021/ptb", "physionet/ptbdb"),
+            ("challenge-2021/ptb-xl", "physionet/ptb-xl"),
         ],
     )
     def test_the_two_packagings_are_different_directories(self, first: str, second: str) -> None:
@@ -84,6 +85,7 @@ class TestOnDisk:
     @pytest.mark.parametrize(
         ("source_id", "n_entries"),
         [
+            ("physionet/ptb-xl", 43598),
             ("challenge-2021/chapman_shaoxing", 20505),
             ("challenge-2021/cpsc_2018", 13762),
             ("challenge-2021/cpsc_2018_extra", 6910),
