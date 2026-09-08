@@ -21,7 +21,7 @@ from pathlib import Path
 
 __all__ = ["DATA_DIR", "PTBXL_DIR", "Source", "source", "sources"]
 
-# The corpora are not in the repository and never will be: 53 GB of them sit on
+# The corpora are not in the repository and never will be: 19 GB of them sit on
 # the box.  Override with ECGCHAIN_DATA_DIR when they move.
 DATA_DIR = Path(os.environ.get("ECGCHAIN_DATA_DIR", Path.home() / "data"))
 

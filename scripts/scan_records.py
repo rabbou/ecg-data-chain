@@ -1,6 +1,6 @@
 """Read every header of every source and write what they declare.
 
-A heavy pass -- 88,253 headers across 53 GB of corpora -- so it runs under a
+A heavy pass -- 88,253 headers across 19 GB of corpora -- so it runs under a
 capped scope, one at a time, per the programme's rule 7:
 
     systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \

@@ -12,6 +12,7 @@ organisers published.
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from collections import Counter
@@ -89,6 +90,7 @@ def ptbxl_join(record: pd.DataFrame) -> dict[str, object]:
 
 
 def main() -> int:
+    argparse.ArgumentParser(description=__doc__).parse_args()
     delivery = Delivery(DELIVERY)
     if "record" not in delivery.present:
         print(f"{DELIVERY} has no record table; run scripts/build_database.py", file=sys.stderr)

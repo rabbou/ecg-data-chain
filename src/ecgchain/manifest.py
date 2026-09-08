@@ -93,7 +93,7 @@ def verify(
 ) -> ManifestReport:
     """Check files under ``directory`` against ``manifest``.
 
-    ``paths`` restricts the check to a subset -- verifying 53 GB is a job for a
+    ``paths`` restricts the check to a subset -- verifying 19 GB is a job for a
     capped scope, not for a test run -- and the report says how many of the
     declared files were actually read.  With ``paths`` left out, every file
     under the directory is checked and files the manifest never listed are

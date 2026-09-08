@@ -5,12 +5,14 @@ would double the only genuinely expensive pass in the chain.
 
 The fingerprint is a digest of the first ten seconds of the twelve standard
 leads, in millivolts, quantised to ten microvolts.  The quantisation is not
-sloppiness: the same tracing reaches the box at different ADC gains -- INCART
-is 306 units per millivolt as PhysioNet publishes it and 1000 in the Challenge
-repackaging -- so a digest of the raw samples would call two copies of one
-recording different, which is the opposite of what a duplicate screen is for.
-Ten microvolts is three times the coarser of those two quantisation steps and
-far below anything an electrocardiogram is read at.
+sloppiness: the same tracing reaches the box at different ADC gains.  INCART's
+PhysioNet packaging carries twelve distinct gains from 240 to 1063 units per
+millivolt, varying by record and by lead, where the Challenge repackaging
+rescales every record to 1000; PTB goes from 2000 to 1000 the same way.  A
+digest of the raw samples would call two copies of one recording different,
+which is the opposite of what a duplicate screen is for.  Ten microvolts is
+above the coarsest of those steps and far below anything an electrocardiogram
+is read at.
 
 The three faults flagged here are the ones that make a record unusable rather
 than merely noisy: a lead that is not there, a lead that never moves, and a

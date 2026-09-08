@@ -1,6 +1,6 @@
 """One heavy pass at a time, and a witness anyone can read.
 
-The corpora are 53 GB on a box with 15 GiB of memory, so the rule is one heavy
+The corpora are 19 GB on a box with 15 GiB of memory, so the rule is one heavy
 job at a time under a capped scope.  Enforcing it by looking for the job in the
 process table does not work: a search for the script's name matches the very
 shell that is doing the searching, so the watcher waits for itself forever.

@@ -141,6 +141,6 @@ class TestFaults:
 
 class TestConstantsAreNotAccidents:
     def test_the_quantum_is_coarser_than_the_coarsest_gain_on_the_box(self) -> None:
-        """INCART is 306 ADC units per millivolt: a step of 3.27 microvolts."""
-        assert MICROVOLTS_PER_STEP > 1000.0 / 306
+        """INCART's coarsest gain is 240 ADC units per millivolt: a 4.17 uV step."""
+        assert MICROVOLTS_PER_STEP > 1000.0 / 240
         assert MICROVOLTS_PER_STEP == 10.0

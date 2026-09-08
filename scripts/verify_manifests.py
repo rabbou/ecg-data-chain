@@ -1,6 +1,6 @@
 """Check the corpora on disk against the checksums their publishers released.
 
-This is a heavy pass -- 53 GB read, hashed once -- so it runs under a capped
+This is a heavy pass -- 19 GB read, hashed once -- so it runs under a capped
 scope, one at a time, per the programme's rule 7:
 
     systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
@@ -20,6 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from ecgchain.heavy import holding  # noqa: E402
 from ecgchain.manifest import parse_manifest, verify  # noqa: E402
 from ecgchain.sources import Source, sources  # noqa: E402
 
@@ -47,6 +48,11 @@ def check(entry: Source) -> dict[str, object]:
 
 
 def main() -> int:
+    with holding("heavy", "scripts/verify_manifests.py"):
+        return _run()
+
+
+def _run() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", action="append", help="a source id; repeatable")
     args = parser.parse_args()

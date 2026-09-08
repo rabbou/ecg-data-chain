@@ -84,7 +84,7 @@ class TestVerify:
         assert report.matched == 1
 
     def test_a_subset_does_not_report_the_files_it_did_not_look_at(self, tmp_path: Path) -> None:
-        """Checking part of 53 GB must not claim the rest is missing."""
+        """Checking part of 19 GB must not claim the rest is missing."""
         self._tree(tmp_path)
         report = verify("t", {"good": ABC, "absent": EMPTY}, tmp_path, [tmp_path / "good"])
         assert report.matched == 1

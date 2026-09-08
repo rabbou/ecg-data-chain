@@ -35,6 +35,6 @@ jobs:
       - run: uv run ruff format --check .
       - run: uv run mypy src tests scripts
 
-      # -m "not data" leaves out the tests that need the corpora: 53 GB that
+      # -m "not data" leaves out the tests that need the corpora: 19 GB that
       # are not in the repository and cannot be downloaded here.
       - run: uv run pytest -q -m "not data"
