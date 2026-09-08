@@ -1,0 +1,61 @@
+{
+  "n_label_rows": 181817,
+  "n_propagated_label_rows": 56868,
+  "propagated_by_source": {
+    "physionet/ptb-xl": 56049,
+    "physionet/ptbdb": 590,
+    "physionet/incartdb": 229
+  },
+  "n_records_given_a_propagated_label": 22389,
+  "deferred_tables": [
+    "split",
+    "signal_window"
+  ],
+  "n_label_map_rows": 164,
+  "label_map_by_source": {
+    "ptbxlToSNOMED.csv": 111,
+    "dx_mapping_scored.csv": 30,
+    "AHA_SNOMED_mapping.csv": 23
+  },
+  "n_patients": 19159,
+  "patients_by_source": {
+    "physionet/ptb-xl": 18869,
+    "physionet/ptbdb": 290
+  },
+  "distributions_publishing_no_patient_key": [
+    "challenge-2021/chapman_shaoxing",
+    "challenge-2021/cpsc_2018",
+    "challenge-2021/cpsc_2018_extra",
+    "challenge-2021/georgia",
+    "challenge-2021/ningbo",
+    "challenge-2021/ptb",
+    "challenge-2021/ptb-xl",
+    "challenge-2021/st_petersburg_incart",
+    "physionet/incartdb",
+    "physionet/ludb"
+  ],
+  "n_scored_classes": 30,
+  "partitions_checked": [
+    "challenge-2021/chapman_shaoxing",
+    "challenge-2021/cpsc_2018",
+    "challenge-2021/cpsc_2018_extra",
+    "challenge-2021/georgia",
+    "challenge-2021/ningbo",
+    "challenge-2021/ptb",
+    "challenge-2021/ptb-xl",
+    "challenge-2021/st_petersburg_incart"
+  ],
+  "published_comparison": {
+    "n_cells": 240,
+    "n_agreeing": 240,
+    "disagreements": [],
+    "n_disagreements": 0
+  },
+  "ptbxl_named_join": {
+    "n_original": 21799,
+    "n_bundled": 21837,
+    "n_matched_by_name": 21799,
+    "n_original_without_a_named_twin": 0,
+    "n_bundled_not_named_by_any_original": 38
+  }
+}

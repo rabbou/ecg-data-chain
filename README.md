@@ -54,6 +54,27 @@ systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
     uv run python scripts/build_database.py
 ```
 
+## Labels
+
+The eight sources of the bundle carry SNOMED CT on the `# Dx:` line of every
+header, so there is no mapping to build — only one to check. Every one of the
+240 cells of the Challenge organisers' own per-partition table, thirty scored
+classes across eight partitions, is recomputed here from the label table and
+agrees.
+
+The four distributions PhysioNet publishes on their own carry no diagnosis at
+all. Three of them are packagings of a corpus whose other packaging does, so
+the statement travels the link the screen established, and the row says it
+travelled and names what it came from. PTB-XL+'s SCP-ECG table cannot do that
+job: its id columns are OMOP concept ids, not SNOMED codes, and the rows say
+so rather than passing one off as the other.
+
+Two of the twelve distributions publish a patient key — PTB-XL's 18,869 and
+PTB's 290. The other ten are reported as publishing none rather than given one
+patient per record.
+
+`split` and `signal_window` stay empty until something reads them.
+
 ## Finding the same tracing twice
 
 Three sieves, cheapest first, each shrinking the work of the next: the

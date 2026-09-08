@@ -33,8 +33,10 @@ from .quality import QualityRow
 from .sources import Source
 
 __all__ = [
+    "DEFERRED",
     "TABLES",
     "duplicate_link_table",
+    "propagate_labels",
     "Delivery",
     "connect",
     "label_table",
@@ -54,10 +56,19 @@ TABLES = (
     "record",
     "lead",
     "label",
+    "label_propagated",
+    "label_map",
+    "patient",
     "quality",
     "signal_group",
     "duplicate_link",
 )
+
+# Two tables of the schema stay empty until something reads them.  `split` waits
+# for its first consumer, and `signal_window` for a delivery that serves arrays
+# rather than pointing at the files; filling either now would be filling it for
+# the shape of the schema rather than for a reader.
+DEFERRED = ("split", "signal_window")
 
 
 def file_id(source_id: str, relative_path: str) -> str:
@@ -217,6 +228,61 @@ def signal_group_table(digests: dict[str, str | None]) -> pd.DataFrame:
         for record_id in members
     ]
     return pd.DataFrame(rows, columns=["record_id", "signal_group_id", "group_size"])
+
+
+def propagate_labels(
+    label: pd.DataFrame, links: pd.DataFrame, record: pd.DataFrame
+) -> pd.DataFrame:
+    """Carry a statement across a link, to a record whose corpus asserted none.
+
+    Four of the twelve distributions ship no diagnosis at all, and three of
+    those four are packagings of a corpus whose other packaging does.  A
+    statement can therefore travel the link the screen established -- which is
+    the whole point of having established it -- provided the row says it
+    travelled and names what it came from, so that a reader can drop every
+    propagated label with one predicate.
+    """
+    statements: dict[str, list[tuple[str, str]]] = {}
+    for record_id, vocabulary, code in zip(
+        label["record_id"], label["vocabulary"], label["code"], strict=True
+    ):
+        statements.setdefault(str(record_id), []).append((str(vocabulary), str(code)))
+
+    source_of = dict(zip(record["record_id"], record["source_id"], strict=True))
+    origin_of: dict[str, str] = {}
+    for column_a, column_b in (("record_a", "record_b"), ("record_b", "record_a")):
+        for target, origin in zip(links[column_a], links[column_b], strict=True):
+            if target in statements or origin not in statements:
+                continue
+            held = origin_of.get(str(target))
+            if held is None or str(origin) < held:
+                origin_of[str(target)] = str(origin)
+
+    rows = [
+        {
+            "record_id": target,
+            "source_id": source_of.get(target),
+            "vocabulary": vocabulary,
+            "code": code,
+            "source_field": f"propagated from {origin}",
+            "asserted_by": "linked record",
+            "via_record_id": origin,
+        }
+        for target, origin in sorted(origin_of.items())
+        for vocabulary, code in statements[origin]
+    ]
+    return pd.DataFrame(
+        rows,
+        columns=[
+            "record_id",
+            "source_id",
+            "vocabulary",
+            "code",
+            "source_field",
+            "asserted_by",
+            "via_record_id",
+        ],
+    )
 
 
 def duplicate_link_table(links: Iterable[DuplicateLink]) -> pd.DataFrame:
