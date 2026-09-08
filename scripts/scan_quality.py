@@ -18,6 +18,7 @@ import json
 import sys
 import time
 from collections import Counter, defaultdict
+from collections.abc import Iterator
 from pathlib import Path
 
 import numpy as np
@@ -92,19 +93,36 @@ def sweep(entry: Source) -> tuple[dict[str, object], dict[str, str | None]]:
 
 
 def lead_one(entry: Source, record_ids: set[str]) -> dict[str, NDArray[np.float32]]:
-    """Lead I of the named records, for the correlation sieve."""
+    """Lead I of the named records, held in memory.
+
+    Only ever called on the records the digests left unmatched, which is at most
+    sixty-nine of them.
+    """
     windows: dict[str, NDArray[np.float32]] = {}
+    for record_id, window in stream_lead_one(entry, record_ids):
+        windows[record_id] = window
+    return windows
+
+
+def stream_lead_one(
+    entry: Source, record_ids: set[str] | None = None
+) -> Iterator[tuple[str, NDArray[np.float32]]]:
+    """Lead I of a distribution, one record at a time.
+
+    The signal of the record being read is the only large array alive: a
+    twelve-lead PTB-XL record is 5,000 samples, an INCART holter 462,600, and
+    neither survives the next iteration.
+    """
     for header in headers(entry):
         record_id = f"{entry.source_id}:{header.stem}"
-        if record_id not in record_ids:
+        if record_ids is not None and record_id not in record_ids:
             continue
         meta = wfdb.rdrecord(str(header.with_suffix("")))
         window, _ = canonical_window(
             np.asarray(meta.p_signal, dtype=np.float64), list(meta.sig_name), float(meta.fs)
         )
         if window is not None:
-            windows[record_id] = window[0]
-    return windows
+            yield record_id, np.ascontiguousarray(window[0])
 
 
 def within_distribution(
@@ -164,13 +182,9 @@ def screen(
     note = ""
     try:
         if left_over:
-            correlation += correlate(
-                lead_one(left, left_over), lead_one(right, set(digests[right.source_id]))
-            )
+            correlation += correlate(lead_one(left, left_over), stream_lead_one(right))
         if right_over:
-            correlation += correlate(
-                lead_one(right, right_over), lead_one(left, set(digests[left.source_id]))
-            )
+            correlation += correlate(lead_one(right, right_over), stream_lead_one(left))
     except ValueError as error:
         note = str(error)
     links = merge(by_file, by_signal, correlation)

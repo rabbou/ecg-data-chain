@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+
 import numpy as np
 import pytest
 from numpy.typing import NDArray
@@ -137,7 +139,7 @@ class TestCorrelate:
     def test_the_same_wave_at_another_scale_is_linked(self) -> None:
         """A change of ADC gain is a change of scale; correlation does not care."""
         wave = self._wave(0)
-        links = correlate({"a:1": wave}, {"b:1": (wave * 3.27).astype(np.float32)})
+        links = correlate({"a:1": wave}, [("b:1", (wave * 3.27).astype(np.float32))])
         assert len(links) == 1
         assert links[0].sieve == "correlation"
         assert links[0].score == pytest.approx(1.0)
@@ -145,25 +147,41 @@ class TestCorrelate:
 
     def test_the_scope_is_carried_through(self) -> None:
         wave = self._wave(0)
-        links = correlate({"a:1": wave}, {"a:2": wave}, scope=WITHIN)
+        links = correlate({"a:1": wave}, [("a:2", wave)], scope=WITHIN)
         assert links[0].scope == WITHIN
 
     def test_an_unrelated_wave_is_not_linked(self) -> None:
-        assert correlate({"a:1": self._wave(0)}, {"b:1": self._wave(1)}) == []
+        assert correlate({"a:1": self._wave(0)}, [("b:1", self._wave(1))]) == []
 
-    def test_each_record_takes_its_best_match_only(self) -> None:
+    def test_each_target_takes_its_best_match_only(self) -> None:
         wave = self._wave(0)
-        links = correlate({"a:1": wave}, {"b:1": wave, "b:2": (wave * 2).astype(np.float32)})
+        links = correlate({"a:1": wave}, [("b:1", wave), ("b:2", (wave * 2).astype(np.float32))])
         assert len(links) == 1
 
     def test_windows_of_different_lengths_compare_on_the_shorter(self) -> None:
         wave = self._wave(0)
-        links = correlate({"a:1": wave}, {"b:1": wave[:300]})
+        links = correlate({"a:1": wave}, [("b:1", wave[:300])])
         assert len(links) == 1
 
     def test_a_comparison_past_the_cap_is_refused_not_run(self) -> None:
         """A screen that silently spends an hour is a screen nobody runs twice."""
-        left = {f"a:{i}": self._wave(i, 4) for i in range(10)}
-        right = {f"b:{i}": self._wave(i, 4) for i in range(10)}
-        with pytest.raises(ValueError, match="past the 50 cap"):
-            correlate(left, right, max_pairs=50)
+        targets = {f"a:{i}": self._wave(i, 4) for i in range(10)}
+        candidates = [(f"b:{i}", self._wave(i, 4)) for i in range(10)]
+        with pytest.raises(ValueError, match="over the 50 cap"):
+            correlate(targets, candidates, max_pairs=50)
+
+    def test_the_candidates_are_consumed_one_at_a_time(self) -> None:
+        """The rewrite that matters: the other side is never held in memory."""
+        alive: list[str] = []
+
+        def stream() -> Iterator[tuple[str, NDArray[np.float32]]]:
+            for index in range(4):
+                alive.append(f"b:{index}")
+                assert len(alive) == index + 1
+                yield f"b:{index}", self._wave(index + 1)
+
+        correlate({"a:1": self._wave(0)}, stream())
+        assert alive == ["b:0", "b:1", "b:2", "b:3"]
+
+    def test_a_generator_that_yields_nothing_links_nothing(self) -> None:
+        assert correlate({"a:1": self._wave(0)}, iter([])) == []

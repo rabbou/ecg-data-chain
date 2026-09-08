@@ -121,30 +121,42 @@ def unmatched(record_ids: Iterable[str], links: Iterable[DuplicateLink]) -> list
 
 
 def correlate(
-    left: Mapping[str, NDArray[np.float32]],
-    right: Mapping[str, NDArray[np.float32]],
+    targets: Mapping[str, NDArray[np.float32]],
+    candidates: Iterable[tuple[str, NDArray[np.float32]]],
     threshold: float = 0.99,
     max_pairs: int = 5_000_000,
     scope: str = ACROSS,
 ) -> list[DuplicateLink]:
-    """Best-match links between two sets of single-lead windows.
+    """Best match for each target among the candidates, streamed.
 
-    Raises rather than running when the comparison is larger than ``max_pairs``:
-    a screen that silently spends an hour is a screen nobody runs twice.
+    The asymmetry is the point.  ``targets`` are the records the digests left
+    unmatched, and there are never many: sixty-nine for INCART, thirty-three for
+    PTB, two for PTB-XL.  ``candidates`` is the whole of the other distribution,
+    tens of thousands of records, and it arrives as an iterator so that one
+    record is in memory at a time.  Holding both sides as dictionaries is what
+    took a 15 GiB machine down.
+
+    ``n_candidates`` is only needed for the cap; pass it when the iterator
+    cannot be measured without consuming it.
     """
-    pairs = len(left) * len(right)
-    if pairs > max_pairs:
-        raise ValueError(f"{pairs} pairs is past the {max_pairs} cap; sieve the digests first")
-    links: list[DuplicateLink] = []
-    for left_id, left_window in left.items():
-        best_id, best_score = "", -1.0
-        for right_id, right_window in right.items():
-            n = min(left_window.size, right_window.size)
+    best: dict[str, tuple[str, float]] = {target: ("", -1.0) for target in targets}
+    seen = 0
+    for candidate_id, candidate in candidates:
+        seen += 1
+        if len(targets) * seen > max_pairs:
+            raise ValueError(
+                f"{len(targets)} targets past {seen} candidates is over the "
+                f"{max_pairs} cap; sieve the digests first"
+            )
+        for target_id, target in targets.items():
+            n = min(target.size, candidate.size)
             if n < 2:
                 continue
-            score = float(np.corrcoef(left_window[:n], right_window[:n])[0, 1])
-            if score > best_score:
-                best_id, best_score = right_id, score
-        if best_id and best_score >= threshold:
-            links.append(DuplicateLink.between(left_id, best_id, "correlation", best_score, scope))
-    return links
+            score = float(np.corrcoef(target[:n], candidate[:n])[0, 1])
+            if score > best[target_id][1]:
+                best[target_id] = (candidate_id, score)
+    return [
+        DuplicateLink.between(target_id, match_id, "correlation", score, scope)
+        for target_id, (match_id, score) in sorted(best.items())
+        if match_id and score >= threshold
+    ]
