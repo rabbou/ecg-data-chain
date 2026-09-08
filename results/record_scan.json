@@ -1,0 +1,295 @@
+[
+  {
+    "source_id": "challenge-2021/chapman_shaoxing",
+    "corpus": "chapman-shaoxing",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 10247,
+    "n_leads_rows": 122964,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      5000
+    ],
+    "units_declared": {
+      "mV": 10247
+    },
+    "n_all_millivolts": 10247,
+    "n_with_dx": 10247,
+    "n_non_canonical_leads": 0,
+    "seconds": 91.9
+  },
+  {
+    "source_id": "challenge-2021/cpsc_2018",
+    "corpus": "cpsc-2018",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 6877,
+    "n_leads_rows": 82524,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      3000,
+      4000,
+      4500,
+      4999,
+      5000,
+      5057,
+      5065,
+      5066
+    ],
+    "units_declared": {
+      "mV": 6877
+    },
+    "n_all_millivolts": 6877,
+    "n_with_dx": 6877,
+    "n_non_canonical_leads": 0,
+    "seconds": 57.0
+  },
+  {
+    "source_id": "challenge-2021/cpsc_2018_extra",
+    "corpus": "cpsc-2018-extra",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 3453,
+    "n_leads_rows": 41436,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      4000,
+      4500,
+      4997,
+      4998,
+      4999,
+      5000,
+      5181,
+      5279
+    ],
+    "units_declared": {
+      "mV": 3453
+    },
+    "n_all_millivolts": 3453,
+    "n_with_dx": 3453,
+    "n_non_canonical_leads": 0,
+    "seconds": 28.0
+  },
+  {
+    "source_id": "challenge-2021/georgia",
+    "corpus": "georgia",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 10344,
+    "n_leads_rows": 124128,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      2500,
+      5000
+    ],
+    "units_declared": {
+      "mV": 10344
+    },
+    "n_all_millivolts": 10344,
+    "n_with_dx": 10344,
+    "n_non_canonical_leads": 0,
+    "seconds": 104.0
+  },
+  {
+    "source_id": "challenge-2021/ningbo",
+    "corpus": "ningbo",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 34905,
+    "n_leads_rows": 418860,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      5000
+    ],
+    "units_declared": {
+      "mV": 34905
+    },
+    "n_all_millivolts": 34905,
+    "n_with_dx": 34905,
+    "n_non_canonical_leads": 0,
+    "seconds": 458.1
+  },
+  {
+    "source_id": "challenge-2021/ptb",
+    "corpus": "ptb",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 516,
+    "n_leads_rows": 6192,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      1000.0
+    ],
+    "sample_lengths": [
+      32000,
+      38400,
+      76800,
+      87910,
+      91987,
+      96588,
+      97000,
+      115174
+    ],
+    "units_declared": {
+      "mv": 516
+    },
+    "n_all_millivolts": 516,
+    "n_with_dx": 516,
+    "n_non_canonical_leads": 0,
+    "seconds": 7.3
+  },
+  {
+    "source_id": "challenge-2021/ptb-xl",
+    "corpus": "ptb-xl",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 21837,
+    "n_leads_rows": 262044,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      5000
+    ],
+    "units_declared": {
+      "mv": 21837
+    },
+    "n_all_millivolts": 21837,
+    "n_with_dx": 21837,
+    "n_non_canonical_leads": 0,
+    "seconds": 251.8
+  },
+  {
+    "source_id": "challenge-2021/st_petersburg_incart",
+    "corpus": "incart",
+    "distribution": "challenge-2021",
+    "version": "1.0.3",
+    "n_records": 74,
+    "n_leads_rows": 888,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      257.0
+    ],
+    "sample_lengths": [
+      462600
+    ],
+    "units_declared": {
+      "mv": 74
+    },
+    "n_all_millivolts": 74,
+    "n_with_dx": 74,
+    "n_non_canonical_leads": 0,
+    "seconds": 0.6
+  },
+  {
+    "source_id": "physionet/incartdb",
+    "corpus": "incart",
+    "distribution": "physionet",
+    "version": "1.0.0",
+    "n_records": 75,
+    "n_leads_rows": 900,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      257.0
+    ],
+    "sample_lengths": [
+      462600
+    ],
+    "units_declared": {
+      "mV": 75
+    },
+    "n_all_millivolts": 75,
+    "n_with_dx": 0,
+    "n_non_canonical_leads": 0,
+    "seconds": 0.6
+  },
+  {
+    "source_id": "physionet/ludb",
+    "corpus": "ludb",
+    "distribution": "physionet",
+    "version": "1.0.1",
+    "n_records": 200,
+    "n_leads_rows": 2400,
+    "leads_per_record": [
+      12
+    ],
+    "sampling_rates_hz": [
+      500.0
+    ],
+    "sample_lengths": [
+      5000
+    ],
+    "units_declared": {
+      "mV": 200
+    },
+    "n_all_millivolts": 200,
+    "n_with_dx": 0,
+    "n_non_canonical_leads": 0,
+    "seconds": 1.9
+  },
+  {
+    "source_id": "physionet/ptbdb",
+    "corpus": "ptb",
+    "distribution": "physionet",
+    "version": "1.0.0",
+    "n_records": 549,
+    "n_leads_rows": 8235,
+    "leads_per_record": [
+      15
+    ],
+    "sampling_rates_hz": [
+      1000.0
+    ],
+    "sample_lengths": [
+      32000,
+      38400,
+      76800,
+      87910,
+      91987,
+      96588,
+      97000,
+      115174
+    ],
+    "units_declared": {
+      "mV": 549
+    },
+    "n_all_millivolts": 549,
+    "n_with_dx": 0,
+    "n_non_canonical_leads": 1647,
+    "seconds": 8.9
+  }
+]
