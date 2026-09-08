@@ -246,7 +246,7 @@
       },
       "shared_native_ids": [],
       "note": "",
-      "seconds": 24.8
+      "seconds": 19.7
     },
     {
       "corpus": "ptb",
@@ -302,7 +302,7 @@
       },
       "shared_native_ids": [],
       "note": "",
-      "seconds": 157.7
+      "seconds": 130.9
     },
     {
       "corpus": "ptb-xl",
@@ -324,7 +324,7 @@
       },
       "shared_native_ids": [],
       "note": "",
-      "seconds": 820.7
+      "seconds": 576.8
     }
   ]
 }

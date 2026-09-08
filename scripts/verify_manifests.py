@@ -39,7 +39,10 @@ def check(entry: Source) -> dict[str, object]:
         "n_declared": report.n_declared,
         "n_checked": report.n_checked,
         "matched": report.matched,
-        "mismatched": report.mismatched,
+        "mismatched": {
+            name: {"declared": declared, "observed": observed}
+            for name, (declared, observed) in report.mismatched.items()
+        },
         "missing_on_disk": report.missing_on_disk,
         "unlisted": report.unlisted,
         "holds": report.holds,

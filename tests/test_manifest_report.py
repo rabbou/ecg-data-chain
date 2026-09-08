@@ -34,6 +34,12 @@ class TestTheLedger:
         for entry in report.values():
             assert entry["matched"] + len(entry["mismatched"]) == entry["n_checked"]
 
+    def test_the_ledger_is_one_run_behind_until_it_is_replayed(
+        self, report: dict[str, dict]
+    ) -> None:
+        """The report on disk predates the digest-recording change."""
+        assert isinstance(report["challenge-2021/ningbo"]["mismatched"], list | dict)
+
 
 class TestTheOneFileThatDiffers:
     """A file the size of its neighbours whose bytes are not what was released.
@@ -43,12 +49,23 @@ class TestTheOneFileThatDiffers:
     """
 
     def test_ningbo_holds_it(self, report: dict[str, dict]) -> None:
-        assert report["challenge-2021/ningbo"]["mismatched"] == [CORRUPTED]
+        mismatched = report["challenge-2021/ningbo"]["mismatched"]
+        assert list(mismatched) == [CORRUPTED]
         assert not report["challenge-2021/ningbo"]["holds"]
+
+    def test_both_digests_are_recorded(self, report: dict[str, dict]) -> None:
+        """The value the page quotes has to come from an artefact."""
+        mismatched = report["challenge-2021/ningbo"]["mismatched"]
+        if not isinstance(mismatched, dict):
+            pytest.skip("this ledger predates the observed digest being recorded")
+        entry = mismatched[CORRUPTED]
+        assert entry["declared"].startswith("de32699c")
+        assert entry["observed"].startswith("bbd5fe83")
+        assert entry["declared"] != entry["observed"]
 
     def test_it_is_the_only_one_in_the_delivery(self, report: dict[str, dict]) -> None:
         mismatched = {
-            source_id: entry["mismatched"]
+            source_id: sorted(entry["mismatched"])
             for source_id, entry in report.items()
             if entry["mismatched"]
         }

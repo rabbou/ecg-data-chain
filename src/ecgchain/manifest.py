@@ -66,7 +66,10 @@ class ManifestReport:
     source_id: str
     n_declared: int  # entries in the manifest, after the prefix filter
     matched: int = 0
-    mismatched: list[str] = field(default_factory=list)
+    # path -> (what the publisher declared, what the file hashes to).  Keeping
+    # only the path would leave the most consequential fact of a run outside
+    # every artefact, checkable by nobody.
+    mismatched: dict[str, tuple[str, str]] = field(default_factory=dict)
     missing_on_disk: list[str] = field(default_factory=list)
     unlisted: list[str] = field(default_factory=list)
 
@@ -109,10 +112,11 @@ def verify(
             report.unlisted.append(name)
             continue
         seen.add(name)
-        if sha256_file(path) == declared:
+        observed = sha256_file(path)
+        if observed == declared:
             report.matched += 1
         else:
-            report.mismatched.append(name)
+            report.mismatched[name] = (declared, observed)
     if not subset:
         report.missing_on_disk = sorted(set(manifest) - seen)
     return report

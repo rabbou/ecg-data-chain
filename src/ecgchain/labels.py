@@ -169,7 +169,7 @@ def label_map_table(directory: Path | None = None) -> pd.DataFrame:
                 "from_vocabulary": "SCP-ECG",
                 "from_code": str(row["Acronym"]).strip(),
                 "to_vocabulary": "OMOP concept",
-                "to_code": str(row["id1"]) if pd.notna(row.get("id1")) else None,
+                "to_code": _concept_id(row.get("id1")),
                 "term": str(row["Dx Statement"]),
                 "map_source": "ptbxlToSNOMED.csv",
             }
@@ -189,6 +189,21 @@ def label_map_table(directory: Path | None = None) -> pd.DataFrame:
         ]
     )
     return frame.merge(meta, on="map_source", how="left")
+
+
+def _concept_id(value: object) -> str | None:
+    """An OMOP concept id as an integer string.
+
+    The column arrives as a float because the file leaves cells empty, and
+    ``str()`` on it would write ``4065390.0``, which is not an identifier
+    anyone can join on.
+    """
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text.lower() in {"nan", "none"}:
+        return None
+    return str(int(float(text)))
 
 
 def bundle_record_id(ecg_id: int) -> str:

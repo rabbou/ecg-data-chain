@@ -70,7 +70,7 @@ class TestVerify:
     def test_each_file_lands_in_one_bucket(self, tmp_path: Path) -> None:
         report = verify("t", self._tree(tmp_path), tmp_path)
         assert report.matched == 1
-        assert report.mismatched == ["corrupt"]
+        assert report.mismatched == {"corrupt": (ABC, sha256_file(tmp_path / "corrupt"))}
         assert report.missing_on_disk == ["absent"]
         assert report.unlisted == ["unlisted"]
         assert report.n_declared == 3
