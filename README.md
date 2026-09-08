@@ -1,7 +1,7 @@
 # ecg-data-chain
 
-Twelve public ECG corpus distributions arrive in formats that disagree with
-each other. Three spell their units `mv` and seven spell them `mV`; two declare
+Twelve public ECG corpus distributions arrive in formats their publishers never
+agreed on. Three spell their units `mv` and seven spell them `mV`; two declare
 no units at all and leave a reader to supply them. One ships fifteen channels
 where the rest ship twelve. Sampling rates run from 257 Hz to 1 kHz and record
 lengths from five seconds to half an hour. Three of the twelve are second
@@ -11,16 +11,13 @@ id finds nothing.
 
 This repository takes them as their publishers ship them and produces one
 queryable database in which every tracing points back, in a single join, to the
-file it came from.
+file it came from. Nothing here trains or evaluates a model.
 
-The delivery holds 110,876 records across 12 distributions. Those records carry
-88,196 distinct tracings: the difference is copies, found by three sieves and
-recorded with the scope they were found in. All 240 cells of the PhysioNet
-Challenge 2021 scored-diagnosis table, thirty classes across eight partitions,
-are recomputed here from the label table and agree with the counts the
-organisers published.
-
-Nothing here trains or evaluates a model.
+The delivery holds 110,876 records across 12 distributions, carrying 88,196
+distinct fingerprints. The correlation sieve links a further 587 pairs that the
+fingerprint does not collapse. All 240 cells of the PhysioNet Challenge 2021
+scored-diagnosis table, thirty classes across eight partitions, are recomputed
+here from the label table and agree with the counts the organisers published.
 
 ## Corpora
 
@@ -47,8 +44,8 @@ appear twice, and the two copies of each disagree on their record count and
 their record ids. INCART and PTB also disagree on ADC gain: INCART's PhysioNet
 packaging carries twelve distinct gains from 240 to 1063 units per millivolt,
 varying by record and by lead, where the bundle rescales every record to 1,000;
-PTB goes from 2,000 to 1,000 the same way. A catalogue keyed on the corpus name
-would merge all six into three.
+PTB goes from 2,000 to 1,000 the same way. Key on the corpus name and the six
+rows collapse into three.
 
 Two distributions publish a patient key: PTB-XL's 18,869 patients and PTB's
 290. For the other ten the `patient` table is empty, rather than holding one
@@ -70,33 +67,33 @@ cd1e882875df52351103b3e9611133a5efad0fedfd93437b82ca53900a42b580
 
 One join, for any record in the delivery. The digest in that third column is
 the one PhysioNet released, read from the `SHA256SUMS.txt` shipped with the
-corpus. `tests/test_database.py` counts the joins in the query, so it cannot
+download. `tests/test_database.py` counts the joins in the query, so it cannot
 gain a second hop without a test failing.
 
 ## Publishers' checksums
 
-Five SHA-256 manifests cover the twelve distributions, each written by whoever
-released that bundle. Re-hashing the files and storing the result would only
-prove the copy is internally consistent. Comparing them against the publisher's
-manifest proves it is the copy the publisher released.
+Five SHA-256 manifests cover the twelve distributions, one for the Challenge
+bundle and four for the corpora PhysioNet publishes on their own. Re-hashing
+the files here would only prove the copy is internally consistent, so the
+digests are compared against the publisher's manifest instead.
 
 Every one of the 222,301 files the delivery points at has its publisher's
-declared digest recorded beside it, and every one of the 224,883 files the
-manifests list is recomputed and compared. Four outcomes are kept apart: files
-that match, files that differ, files the manifest lists and the disk does not
-hold, files on disk the manifest never lists.
+declared digest recorded beside it. Of the 224,883 files the manifests list,
+224,882 are recomputed and compared and 224,881 match. Four outcomes are kept
+apart: files that match, files that differ, files the manifest lists and the
+disk does not hold, files on disk the manifest never lists.
 
 One file differs. `training/ningbo/g3/JS13118.mat` is 120,024 bytes, the same
 length as its neighbours, and hashes to `bbd5fe83…` where PhysioNet published
-`de32699c…`. Its size, header and signal look ordinary: the file parses,
-canonicalises to twelve leads, and passes every quality check here. It is
-counted below. It is also why this chain starts at the publisher's manifest
-instead of at the signal.
+`de32699c…`. Its size and header look ordinary, it parses to twelve canonical
+leads, and it passes every quality check here. It is among the clean records
+counted below. Only the publisher's manifest catches it; nothing in the signal
+does.
 
-The rest of the ledger is download residue. One manifest entry, a `.DS_Store`
-in CPSC-2018, is listed and absent. 401 files on disk are unlisted: 394
-`index.html` left by a recursive fetch, three `robots.txt`, the three manifests
-that sit inside the directories they cover, and one `.DS_Store`.
+Everything else the check reports is download residue. One manifest entry, a
+`.DS_Store` in CPSC-2018, is listed and absent. 401 files on disk are unlisted:
+394 `index.html` left by a recursive fetch, three `robots.txt`, the three
+manifests that sit inside the directories they cover, and one `.DS_Store`.
 
 ## Finding the same tracing twice
 
@@ -119,23 +116,27 @@ Three sieves, cheapest first, each shrinking the work of the next.
 | PTB | 516 and 549 | 516 | 0 | 516 | 33 |
 | PTB-XL | 21,837 and 21,799 | 21,837 | 21,835 | 2 | none |
 
-Not one record id is shared between two packagings of a corpus, so a screen
-keyed on ids returns nothing on all three.
+No record id is shared between two packagings of a corpus, so a screen keyed on
+ids returns nothing on all three.
 
-Every link records the scope it was found in. Two packagings of one corpus
-repeating a tracing is one kind of finding. A single distribution shipping the
-same tracing twice under two record ids is a different one, and it is the kind
-a split has to respect, because splitting by patient does not separate a
-recording from its own copy. Six of the twelve do it: CPSC-2018 261 pairs,
-Georgia 96, CPSC-extra 70, the bundled PTB-XL 38, Chapman-Shaoxing 13, Ningbo
-3. The four distributions PhysioNet publishes on their own repeat nothing.
+Every link records the scope it was found in. A repeat across two packagings of
+one corpus and a repeat inside a single distribution are different findings,
+and the second is the one a split has to respect, because splitting by patient
+does not separate a recording from its own copy. Six of the twelve hold such
+repeats: CPSC-2018 250 groups over 505 records, Georgia 92 over 186,
+CPSC-extra 68 over 137, the bundled PTB-XL 34 over 70, Chapman-Shaoxing 13 over
+26, Ningbo 3 over 6. The four distributions PhysioNet publishes on their own
+hold none.
 
-Thirty of those pairs were opened to settle whether they are copies or second
+Thirty of those groups were opened to settle whether they are copies or second
 recordings of one patient: twenty from CPSC-2018 and ten from Georgia, drawn
 with a fixed seed. All thirty are identical sample for sample over the whole
 record, with a maximum absolute difference of 0.0 and header comment blocks
-that match line for line. Records that share a tracing share a `signal_group`,
-so a split can be drawn on that column.
+that match line for line.
+
+A split has to union `duplicate_link`, not `signal_group` alone: 587 of the
+links come from the correlation sieve, and those pairs carry different
+fingerprints by construction.
 
 ## Quality
 
@@ -149,41 +150,40 @@ the other eleven distributions together.
 ## Labels
 
 The eight sources of the Challenge bundle carry SNOMED CT on the `# Dx:` line
-of every header, so there is no mapping to build here, only one to check. The
-240 published cells are recomputed from the label table and agree.
+of every header, so the mapping only has to be checked, not built. The 240
+published cells are recomputed from the label table and agree.
 
-The four distributions PhysioNet publishes on their own carry no diagnosis.
-Three of them are packagings of a corpus whose other packaging does, so the
-statement travels the link the screen established: 56,868 labels reach 22,389
-records that way. Each row names the record it came from and is kept in its own
-table, so a reader drops every propagated label with one predicate.
+Diagnoses are absent from the four distributions PhysioNet publishes on their
+own. Three of them are packagings of a corpus whose other packaging carries
+them, so a label is copied across the link to the record on the other side:
+56,868 labels reach 22,389 records that way. Each row names the record it came
+from and is kept in its own table, so a reader drops every copied label with
+one predicate.
 
-PTB-XL+'s SCP-ECG table cannot do that job. Its id columns hold OMOP concept
-ids, not SNOMED CT codes, and its rows carry `OMOP concept` in the
-`to_vocabulary` column.
+PTB-XL+'s SCP-ECG table is no help here. Its id columns hold OMOP concept ids
+rather than SNOMED CT codes, so its 111 rows are recorded with `OMOP concept`
+in `label_map.to_vocabulary` and an empty SNOMED code.
 
-The three published code tables are read where the study that assembled them
-keeps them, and each is checked against the digest it was retrieved at before
-it is read.
+The three published code tables are read from a local copy, each checked
+against the digest it was retrieved at before it is read.
 
 ## Tables
 
 | Table | Rows | One row per |
 |---|---|---|
 | `source` | 12 | corpus distribution |
-| `source_file` | 222,301 | file as its publisher shipped it |
+| `source_file` | 222,301 | header or signal file as its publisher shipped it |
 | `record` | 110,876 | tracing as its corpus ships it |
 | `lead` | 1,332,159 | channel of a tracing |
 | `label` | 181,817 | statement its corpus asserted |
-| `label_propagated` | 56,868 | statement carried across a link |
+| `label_propagated` | 56,868 | statement copied across a link |
 | `label_map` | 164 | published mapping between vocabularies |
 | `patient` | 22,348 | record, with the patient published for it |
 | `quality` | 110,876 | tracing judged |
-| `signal_group` | 110,876 | tracing, with the records holding it |
+| `signal_group` | 110,876 | record, with the fingerprint group it belongs to |
 | `duplicate_link` | 22,897 | pair of records the screen linked |
 
-Parquet files. DuckDB reads them in process, so there is no server to run and
-nothing to load first.
+Parquet files. DuckDB reads them in process, so there is no server to run.
 
 ## Reproducing this
 
@@ -194,16 +194,18 @@ environment:
   `~/data`.
 - `ECGCHAIN_PTBXL_DIR`, PTB-XL 1.0.3 as PhysioNet publishes it, which sits
   outside the others. Defaults to `~/Developer/ptbxl5d/data`.
-- `ECGCHAIN_MAPPINGS_DIR`, the three published code tables: the Challenge 2021
-  scored-diagnosis table from `physionetchallenges/evaluation-2021`, Leinonen
-  et al.'s AHA to SNOMED table from `UTU-Health-Research/dl-ecg-classifier`,
-  and PTB-XL+ 1.0.1's SCP-ECG table from PhysioNet. `src/ecgchain/labels.py`
-  holds the SHA-256 each was retrieved at and refuses a file that differs.
+- `ECGCHAIN_MAPPINGS_DIR`, a directory holding the three published code tables:
+  `dx_mapping_scored.csv` from `physionetchallenges/evaluation-2021`,
+  `AHA_SNOMED_mapping.csv` from `UTU-Health-Research/dl-ecg-classifier`, and
+  `ptbxlToSNOMED.csv` from PTB-XL+ 1.0.1 on PhysioNet. Fetch those three
+  yourself; the default path is local to one machine.
+  `src/ecgchain/labels.py` holds the SHA-256 each was retrieved at and refuses
+  a file that differs.
 
 ```
 uv sync --dev
-uv run pytest -q -m "not data"        # 268 tests, no corpora needed
-uv run pytest -q                      # 291 tests, with corpora on disk
+uv run pytest -q -m "not data"        # 273 tests, no corpora needed
+uv run pytest -q                      # with corpora on disk
 ```
 
 Four passes read the corpora. Each runs under a memory cap and holds a lock, so
@@ -219,23 +221,23 @@ systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
 systemd-run --user --scope -p MemoryMax=6G -p MemoryHigh=5G \
     uv run python scripts/build_database.py      # 43 min, writes the Parquet
 uv run python scripts/build_labels.py            # seconds, reads the Parquet
+                                                 # and the patient metadata
 ```
 
-`scan_quality.py --reuse-digests` screens again from the cached fingerprints in
-about 17 minutes, without reading the signals a second time.
+`scan_quality.py --reuse-digests` screens again from the cached fingerprints
+without reading the signals a second time.
 
 ## Limits
 
-MIMIC-IV-ECG is not here. Its archive was still downloading when this was
-built, and nothing in this repository reads it.
+MIMIC-IV-ECG is not here. Nothing in this repository reads it.
 
-`split` and `signal_window` are declared in the schema and hold no rows.
-Drawing a split is the reader's decision, so none is shipped, and the delivery
+`split` and `signal_window` are named in the code as deferred and are not in
+the delivery at all. Drawing a split is the reader's decision, and the delivery
 points at signal files rather than serving arrays.
 
 The ten-microvolt quantum is this repository's choice, not a published
-threshold. Two recordings that differ by less than that get the same
-fingerprint. The correlation sieve catches the pairs the fingerprint misses.
+threshold: two recordings that differ by less than that get the same
+fingerprint, and the correlation sieve catches the pairs it misses.
 
 Vendor XML is absent. Chapman-Shaoxing came out of a GE MUSE system and
 PhysioNet redistributes it converted to WFDB, so there is no MUSE, Philips,
@@ -243,6 +245,6 @@ SCP-ECG or ISHNE file here to write a parser against.
 
 ## Gates
 
-`ruff check`, `ruff format --check`, `mypy` and `pytest`, on every push and
-pull request. Tests marked `data` need the corpora and are skipped where they
-are absent.
+`ruff check`, `ruff format --check`, `mypy` and `pytest`, on every push to
+`main` and on every pull request. Tests marked `data` need the corpora and are
+skipped where they are absent.

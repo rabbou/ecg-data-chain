@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from ecgchain.database import (  # noqa: E402
     TABLES,
+    Delivery,
     connect,
     duplicate_link_table,
     label_table,
@@ -92,12 +93,25 @@ def read_links() -> list[DuplicateLink]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", action="append", help="a source id; repeatable")
+    parser.add_argument(
+        "--derived-only",
+        action="store_true",
+        help="rebuild signal_group and duplicate_link from the tables already written",
+    )
     args = parser.parse_args()
 
     with holding("heavy", "scripts/build_database.py"):
         wanted = [e for e in sources() if not args.source or e.source_id in args.source]
         started = time.monotonic()
         parts: dict[str, list[pd.DataFrame]] = {}
+        if args.derived_only:
+            delivery = Delivery(DELIVERY)
+            tables = {
+                name: pd.read_parquet(delivery.path(name))
+                for name in TABLES
+                if delivery.path(name).exists()
+            }
+            return _finish(tables, wanted, started)
         for entry in wanted:
             if not entry.directory.is_dir():
                 print(f"{entry.source_id}: {entry.directory} is not there", file=sys.stderr)
@@ -112,38 +126,43 @@ def main() -> int:
 
         tables = {name: pd.concat(frames, ignore_index=True) for name, frames in parts.items()}
         tables["source"] = source_table(wanted)
-        digests = dict(
-            zip(tables["quality"]["record_id"], tables["quality"]["signal_digest"], strict=True)
-        )
-        tables["signal_group"] = signal_group_table(digests)
-        tables["duplicate_link"] = duplicate_link_table(read_links())
+        return _finish(tables, wanted, started)
 
-        delivery = write({name: tables[name] for name in TABLES if name in tables}, DELIVERY)
-        connection = connect(delivery)
 
-        sample = connection.execute(
-            "SELECT record_id FROM record USING SAMPLE 1 ROWS (reservoir, 20260908)"
-        ).fetchone()
-        traced = trace(connection, str(sample[0])) if sample else None
+def _finish(tables: dict[str, pd.DataFrame], wanted: list[Source], started: float) -> int:
+    """Derive the two tables that come from the others, then write and report."""
+    digests = dict(
+        zip(tables["quality"]["record_id"], tables["quality"]["signal_digest"], strict=True)
+    )
+    tables["duplicate_link"] = duplicate_link_table(read_links())
+    tables["signal_group"] = signal_group_table(digests, tables["duplicate_link"])
 
-        report = {
-            "tables": {name: int(len(tables[name])) for name in TABLES if name in tables},
-            "n_records": int(len(tables["record"])),
-            "n_distinct_signal_groups": int(tables["signal_group"]["signal_group_id"].nunique()),
-            "n_records_in_a_repeated_group": int((tables["signal_group"]["group_size"] > 1).sum()),
-            "duplicate_links_by_scope": {
-                WITHIN: int((tables["duplicate_link"]["scope"] == WITHIN).sum()),
-                ACROSS: int((tables["duplicate_link"]["scope"] == ACROSS).sum()),
-            },
-            "n_files_without_a_declared_digest": int(
-                tables["source_file"]["sha256_declared"].isna().sum()
-            ),
-            "traced_example": traced,
-            "seconds": round(time.monotonic() - started, 1),
-        }
-        RESULTS.mkdir(exist_ok=True)
-        (RESULTS / "database_report.json").write_text(json.dumps(report, indent=2) + "\n")
-        print(json.dumps(report["tables"], indent=2))
+    delivery = write({name: tables[name] for name in TABLES if name in tables}, DELIVERY)
+    connection = connect(delivery)
+
+    sample = connection.execute(
+        "SELECT record_id FROM record USING SAMPLE 1 ROWS (reservoir, 20260908)"
+    ).fetchone()
+    traced = trace(connection, str(sample[0])) if sample else None
+
+    report = {
+        "tables": {name: int(len(tables[name])) for name in TABLES if name in tables},
+        "n_records": int(len(tables["record"])),
+        "n_distinct_signal_groups": int(tables["signal_group"]["signal_group_id"].nunique()),
+        "n_records_in_a_repeated_group": int((tables["signal_group"]["group_size"] > 1).sum()),
+        "duplicate_links_by_scope": {
+            WITHIN: int((tables["duplicate_link"]["scope"] == WITHIN).sum()),
+            ACROSS: int((tables["duplicate_link"]["scope"] == ACROSS).sum()),
+        },
+        "n_files_without_a_declared_digest": int(
+            tables["source_file"]["sha256_declared"].isna().sum()
+        ),
+        "traced_example": traced,
+        "seconds": round(time.monotonic() - started, 1),
+    }
+    RESULTS.mkdir(exist_ok=True)
+    (RESULTS / "database_report.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(json.dumps(report["tables"], indent=2))
     return 0
 
 

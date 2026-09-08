@@ -107,7 +107,9 @@ def lead_one(entry: Source, record_ids: set[str]) -> dict[str, NDArray[np.float3
     return windows
 
 
-def within_distribution(entry: Source, digests: dict[str, str | None]) -> dict[str, object]:
+def within_distribution(
+    entry: Source, digests: dict[str, str | None]
+) -> tuple[dict[str, object], list[DuplicateLink]]:
     """What one distribution repeats inside itself.
 
     Only the fingerprint sieve runs here: correlating 34,905 records against
@@ -119,7 +121,7 @@ def within_distribution(entry: Source, digests: dict[str, str | None]) -> dict[s
     links = [link for link in by_digest(digests, "signal", source_of) if link.scope == WITHIN]
     repeated = {digest: members for digest, members in groups(digests).items() if len(members) > 1}
     in_a_group = sum(len(members) for members in repeated.values())
-    return {
+    report: dict[str, object] = {
         "source_id": entry.source_id,
         "corpus": entry.corpus,
         "distribution": entry.distribution,
@@ -131,6 +133,7 @@ def within_distribution(entry: Source, digests: dict[str, str | None]) -> dict[s
         "n_distinct_tracings": len(digests) - (in_a_group - len(repeated)),
         "examples": [members for members in list(repeated.values())[:3]],
     }
+    return report, links
 
 
 def screen(
@@ -242,9 +245,11 @@ def _run() -> int:
     CACHE.write_text(json.dumps(digests))
 
     inside = []
+    within_links: list[DuplicateLink] = []
     for entry in wanted:
-        result = within_distribution(entry, digests[entry.source_id])
+        result, pairs = within_distribution(entry, digests[entry.source_id])
         inside.append(result)
+        within_links.extend(pairs)
         if result["n_pairs"]:
             print(
                 f"{result['source_id']}: {result['n_pairs']} pairs inside itself"
@@ -280,15 +285,13 @@ def _run() -> int:
             {
                 "within": [
                     {
-                        "record_a": a,
-                        "record_b": b,
-                        "sieve": "signal",
-                        "score": 1.0,
-                        "scope": WITHIN,
+                        "record_a": link.record_a,
+                        "record_b": link.record_b,
+                        "sieve": link.sieve,
+                        "score": link.score,
+                        "scope": link.scope,
                     }
-                    for report in inside
-                    for members in _repeated_members(digests[str(report["source_id"])])
-                    for a, b in zip(members, members[1:], strict=False)
+                    for link in within_links
                 ],
                 "across": [
                     {
@@ -307,10 +310,6 @@ def _run() -> int:
         json.dumps({"within": inside, "across": screens}, indent=2) + "\n"
     )
     return 0
-
-
-def _repeated_members(digests: dict[str, str | None]) -> list[list[str]]:
-    return [members for members in groups(digests).values() if len(members) > 1]
 
 
 if __name__ == "__main__":

@@ -98,6 +98,13 @@ class TestTables:
 
 
 class TestSignalGroups:
+    @staticmethod
+    def _links(*pairs: tuple[str, str]) -> pd.DataFrame:
+        return pd.DataFrame(
+            [{"record_a": a, "record_b": b} for a, b in pairs],
+            columns=["record_a", "record_b"],
+        )
+
     def test_records_holding_one_tracing_share_a_group(self) -> None:
         frame = signal_group_table({"a:1": "x", "a:2": "x", "b:1": "y"})
         by_record = dict(zip(frame["record_id"], frame["signal_group_id"], strict=True))
@@ -111,6 +118,38 @@ class TestSignalGroups:
 
     def test_a_record_with_no_fingerprint_is_in_no_group(self) -> None:
         assert signal_group_table({"a:1": None}).empty
+
+    def test_a_link_the_fingerprint_missed_still_joins_the_group(self) -> None:
+        """The defect this closes: all 516 PTB pairs are correlation links.
+
+        A group built from fingerprints alone puts a record and its own copy in
+        different groups, so a split drawn on the column separates them.
+        """
+        digests = {"a:1": "x", "b:1": "y"}
+        alone = signal_group_table(digests)
+        assert alone.loc[0, "signal_group_id"] != alone.loc[1, "signal_group_id"]
+        joined = signal_group_table(digests, self._links(("a:1", "b:1")))
+        assert joined.loc[0, "signal_group_id"] == joined.loc[1, "signal_group_id"]
+        assert set(joined["group_size"]) == {2}
+
+    def test_the_group_closes_over_a_chain_of_links(self) -> None:
+        digests = {"a:1": "x", "b:1": "y", "c:1": "z"}
+        frame = signal_group_table(digests, self._links(("a:1", "b:1"), ("b:1", "c:1")))
+        assert frame["signal_group_id"].nunique() == 1
+        assert set(frame["group_size"]) == {3}
+
+    def test_the_fingerprint_stays_readable_on_its_own(self) -> None:
+        frame = signal_group_table({"a:1": "x", "b:1": "y"}, self._links(("a:1", "b:1")))
+        assert sorted(frame["fingerprint"]) == ["x", "y"]
+
+    def test_the_group_is_named_by_the_smallest_record_it_holds(self) -> None:
+        frame = signal_group_table({"b:1": "x", "a:1": "y"}, self._links(("b:1", "a:1")))
+        assert set(frame["signal_group_id"]) == {"a:1"}
+
+    def test_a_link_to_a_record_outside_the_digests_is_ignored(self) -> None:
+        frame = signal_group_table({"a:1": "x"}, self._links(("a:1", "z:9")))
+        assert len(frame) == 1
+        assert frame.loc[0, "group_size"] == 1
 
 
 class TestDuplicateLinkTable:

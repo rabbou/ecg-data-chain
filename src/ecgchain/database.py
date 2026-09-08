@@ -20,7 +20,8 @@ the files would be a second thing to trust.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections import Counter
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -210,24 +211,58 @@ def quality_table(rows: Iterable[QualityRow]) -> pd.DataFrame:
     )
 
 
-def signal_group_table(digests: dict[str, str | None]) -> pd.DataFrame:
-    """One row per tracing, carrying the group of records that hold it.
+def signal_group_table(
+    digests: Mapping[str, str | None], links: pd.DataFrame | None = None
+) -> pd.DataFrame:
+    """One row per record, carrying the group of records that hold its tracing.
 
-    This is the column a split is drawn on.  Splitting by patient does not
-    separate a recording from its own copy under another record id, and the
-    copies are here: CPSC-2018 ships 6,877 records holding 6,622 tracings.
+    This is the column a split is drawn on, so it has to close over every sieve
+    and not only the fingerprint.  The correlation sieve exists precisely
+    because a fingerprint misses pairs: all 516 of PTB's cross-packaging pairs
+    are correlation links, and a group built from fingerprints alone would put
+    a record and its own copy on opposite sides of a fold.
+
+    The group is therefore the connected component over the fingerprint groups
+    and every link together, named by the smallest record id it contains.  The
+    fingerprint stays in its own column, so a reader can still ask which
+    records are byte-equal to ten microvolts.
     """
-    found = groups(digests)
+    parent: dict[str, str] = {record_id: record_id for record_id in digests}
+
+    def find(node: str) -> str:
+        root = node
+        while parent[root] != root:
+            root = parent[root]
+        while parent[node] != root:
+            parent[node], node = root, parent[node]
+        return root
+
+    def union(left: str, right: str) -> None:
+        a, b = find(left), find(right)
+        if a != b:
+            parent[max(a, b)] = min(a, b)
+
+    for members in groups(digests).values():
+        for other in members[1:]:
+            union(members[0], other)
+    if links is not None:
+        for left, right in zip(links["record_a"], links["record_b"], strict=True):
+            if left in parent and right in parent:
+                union(str(left), str(right))
+
+    component = {record_id: find(record_id) for record_id in parent}
+    sizes = Counter(component.values())
     rows = [
         {
             "record_id": record_id,
-            "signal_group_id": digest,
-            "group_size": len(members),
+            "signal_group_id": root,
+            "group_size": sizes[root],
+            "fingerprint": digests[record_id],
         }
-        for digest, members in found.items()
-        for record_id in members
+        for record_id, root in sorted(component.items())
+        if digests[record_id] is not None
     ]
-    return pd.DataFrame(rows, columns=["record_id", "signal_group_id", "group_size"])
+    return pd.DataFrame(rows, columns=["record_id", "signal_group_id", "group_size", "fingerprint"])
 
 
 def propagate_labels(
