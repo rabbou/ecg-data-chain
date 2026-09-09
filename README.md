@@ -236,8 +236,14 @@ uv run python scripts/build_labels.py            # seconds, reads the Parquet
 ```
 
 `scan_quality.py --reuse-digests` screens again from the cached fingerprints
-without reading the signals a second time, in twelve minutes. The heaviest of
-these passes measured 2.44 GB at its peak.
+without reading the signals a second time, in twelve minutes.
+
+The caps are set on what these passes hold, not on what they read. Profiled on
+one pair of packagings, the screen holds 272 MB resident and 0.16 GB of
+anonymous memory; the cgroup counter reaches 0.88 GB for the same run, and the
+difference is page cache from the corpus files. A pure hashing pass reaches the
+same 2.44 GB on that counter as a full screen does, which is what page cache
+looks like rather than a memory requirement.
 
 ## Limits
 

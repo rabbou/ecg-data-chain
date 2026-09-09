@@ -1,0 +1,87 @@
+{
+  "left": "challenge-2021/st_petersburg_incart",
+  "right": "physionet/incartdb",
+  "n_links_by_digest": 5,
+  "n_links_by_correlation": 69,
+  "n_targets": 69,
+  "phases": [
+    {
+      "phase": "load fingerprint cache",
+      "kept_MB": 22.0,
+      "peak_MB": 37.1,
+      "rss_before_MB": 111.7,
+      "rss_after_MB": 169.7
+    },
+    {
+      "phase": "file_digests both sides",
+      "kept_MB": 0.3,
+      "peak_MB": 22.6,
+      "rss_before_MB": 169.7,
+      "rss_after_MB": 169.7
+    },
+    {
+      "phase": "by_digest on files and signals",
+      "kept_MB": 0.0,
+      "peak_MB": 22.4,
+      "rss_before_MB": 169.7,
+      "rss_after_MB": 169.7
+    },
+    {
+      "phase": "lead_one on the leftovers",
+      "kept_MB": 8.6,
+      "peak_MB": 136.4,
+      "rss_before_MB": 169.7,
+      "rss_after_MB": 271.3
+    },
+    {
+      "phase": "correlate against the streamed side",
+      "kept_MB": 0.0,
+      "peak_MB": 136.8,
+      "rss_before_MB": 271.3,
+      "rss_after_MB": 272.2
+    }
+  ],
+  "rss_peak_MB": 272.2,
+  "top_allocations_at_the_end": [
+    {
+      "where": "decoder.py:353",
+      "MB": 22.0,
+      "line": "obj, end = self.scan_once(s, idx)"
+    },
+    {
+      "where": "quality.py:85",
+      "MB": 8.52,
+      "line": "return np.ascontiguousarray(signal[:n, order].T, dtype=np.float32), ()"
+    },
+    {
+      "where": "generic.py:6208",
+      "MB": 0.11,
+      "line": "return object.__setattr__(self, name, value)"
+    },
+    {
+      "where": "_stride_tricks_impl.py:456",
+      "MB": 0.09,
+      "line": "it = np.nditer("
+    },
+    {
+      "where": "<frozen importlib._bootstrap_external>:753",
+      "MB": 0.04,
+      "line": ""
+    },
+    {
+      "where": "managers.py:1235",
+      "MB": 0.02,
+      "line": "nb = type(block)("
+    },
+    {
+      "where": "base.py:676",
+      "MB": 0.02,
+      "line": "result._references.add_index_reference(result)"
+    },
+    {
+      "where": "array.py:828",
+      "MB": 0.02,
+      "line": "val = value.as_py()"
+    }
+  ]
+}

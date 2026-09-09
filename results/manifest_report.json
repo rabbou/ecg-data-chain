@@ -7,7 +7,7 @@
     "n_declared": 20505,
     "n_checked": 20505,
     "matched": 20505,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
@@ -24,7 +24,7 @@
       "g1/index.html"
     ],
     "holds": true,
-    "seconds": 25.8
+    "seconds": 14.2
   },
   {
     "source_id": "challenge-2021/cpsc_2018",
@@ -34,7 +34,7 @@
     "n_declared": 13762,
     "n_checked": 13761,
     "matched": 13761,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [
       ".DS_Store"
     ],
@@ -49,7 +49,7 @@
       "g1/index.html"
     ],
     "holds": false,
-    "seconds": 26.9
+    "seconds": 9.1
   },
   {
     "source_id": "challenge-2021/cpsc_2018_extra",
@@ -59,7 +59,7 @@
     "n_declared": 6910,
     "n_checked": 6910,
     "matched": 6910,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
@@ -69,7 +69,7 @@
       "g1/index.html"
     ],
     "holds": true,
-    "seconds": 19.3
+    "seconds": 3.5
   },
   {
     "source_id": "challenge-2021/georgia",
@@ -79,7 +79,7 @@
     "n_declared": 20699,
     "n_checked": 20699,
     "matched": 20699,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
@@ -96,7 +96,7 @@
       "g1/index.html"
     ],
     "holds": true,
-    "seconds": 64.0
+    "seconds": 13.1
   },
   {
     "source_id": "challenge-2021/ningbo",
@@ -106,9 +106,12 @@
     "n_declared": 69845,
     "n_checked": 69845,
     "matched": 69844,
-    "mismatched": [
-      "g3/JS13118.mat"
-    ],
+    "mismatched": {
+      "g3/JS13118.mat": {
+        "declared": "de32699cbd677b507177b60fa06125e55a935c8ef69daa0f8e8171b06d1b6f5a",
+        "observed": "bbd5fe831ad2ce60dc62588a9f8eeccc2ea37564cf0bfb4d7a8d49c6a9eafdfd"
+      }
+    },
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
@@ -149,7 +152,7 @@
       "g25/index.html"
     ],
     "holds": false,
-    "seconds": 199.7
+    "seconds": 43.8
   },
   {
     "source_id": "challenge-2021/ptb",
@@ -159,14 +162,14 @@
     "n_declared": 1033,
     "n_checked": 1033,
     "matched": 1033,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
       "g1/index.html"
     ],
     "holds": true,
-    "seconds": 9.5
+    "seconds": 5.2
   },
   {
     "source_id": "challenge-2021/ptb-xl",
@@ -176,7 +179,7 @@
     "n_declared": 43696,
     "n_checked": 43696,
     "matched": 43696,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
@@ -204,7 +207,7 @@
       "g1/index.html"
     ],
     "holds": true,
-    "seconds": 92.0
+    "seconds": 32.3
   },
   {
     "source_id": "challenge-2021/st_petersburg_incart",
@@ -214,14 +217,14 @@
     "n_declared": 149,
     "n_checked": 149,
     "matched": 149,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "index.html",
       "g1/index.html"
     ],
     "holds": true,
-    "seconds": 5.1
+    "seconds": 2.6
   },
   {
     "source_id": "physionet/incartdb",
@@ -231,7 +234,7 @@
     "n_declared": 230,
     "n_checked": 230,
     "matched": 230,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "SHA256SUMS.txt",
@@ -239,7 +242,7 @@
       "robots.txt"
     ],
     "holds": true,
-    "seconds": 5.4
+    "seconds": 2.5
   },
   {
     "source_id": "physionet/ptb-xl",
@@ -249,13 +252,13 @@
     "n_declared": 43598,
     "n_checked": 43598,
     "matched": 43598,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       ".DS_Store"
     ],
     "holds": true,
-    "seconds": 124.2
+    "seconds": 33.6
   },
   {
     "source_id": "physionet/ludb",
@@ -265,7 +268,7 @@
     "n_declared": 2805,
     "n_checked": 2805,
     "matched": 2805,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "SHA256SUMS.txt",
@@ -274,7 +277,7 @@
       "data/index.html"
     ],
     "holds": true,
-    "seconds": 1.3
+    "seconds": 1.1
   },
   {
     "source_id": "physionet/ptbdb",
@@ -284,7 +287,7 @@
     "n_declared": 1651,
     "n_checked": 1651,
     "matched": 1651,
-    "mismatched": [],
+    "mismatched": {},
     "missing_on_disk": [],
     "unlisted": [
       "SHA256SUMS.txt",
@@ -582,6 +585,6 @@
       "patient099/index.html"
     ],
     "holds": true,
-    "seconds": 9.3
+    "seconds": 7.6
   }
 ]
